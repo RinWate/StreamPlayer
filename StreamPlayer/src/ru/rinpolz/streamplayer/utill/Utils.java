@@ -32,12 +32,8 @@ public abstract class Utils {
 	public static final Color PROGRESS_COLOR = new Color(245, 155, 5, 130);
 	public static final Color DEST_COLOR = new Color(255, 5, 0, 200);
 
-	public static final Color PRESET_COLOR = new Color(255, 230, 5, 130);
-	public static final Color BACK_PRESET_COLOR = new Color(15, 91, 255, 150);
+	public static final Color PRESET_COLOR = new Color(66, 192, 166, 150);
 
-	
-	
-	
 	public static double map(double n, double start1, double stop1, double start2, double stop2) {
 		return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
 	}

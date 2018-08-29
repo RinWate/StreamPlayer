@@ -12,31 +12,33 @@ import ru.rinpolz.streamplayer.utill.Utils;
 
 public class SlideLinePanel extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
-
-	Color backColor;
-
+	private Color backColor;
 	static BufferStrategy bfs;
+	private Graphics g;
+	private byte[] samples;
+	private String line = " ";
 
-	public byte[] samples;
-	public String line = " ";
+	private boolean init = false;
+	private boolean isPaint = false;
+	private boolean isRunning = false;
 
-	public boolean init = false;
-	boolean isPaint = false;
+	private boolean back = false;
 
-	public boolean isRunning = false;
-	public boolean back = false;
+	private float cprogress = 0;
+	private int Destprogress = 0;
 
-	int presset = -1;
+	private float curPresset = 0;
+	private int presset = -1;
 
-	float cprogress = 0;
-	int Destprogress = 0;
+	private int x = 0;
+	private int summ = 0;
+	private int arreyOffset = 0;
 
-	int x = 0;
-	int summ = 0;
-	int arreyOffset = 0;
+	private int stringWidth = 0;
+	private boolean updateStingSize = true;
 
 	public SlideLinePanel() {
-		this.setBackground(Color.BLUE);
+		this.setBackground(Color.DARK_GRAY);
 		this.setIgnoreRepaint(true);
 		this.setFocusable(false);
 		this.setEnabled(false);
@@ -46,29 +48,25 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	public void render() {
 
 		try {
-			backColor = new Color(summ, 50, 50, 128);
-			Graphics g = bfs.getDrawGraphics();
-			summ = norm(summ);
 
+			g = bfs.getDrawGraphics();
+
+			g.setFont(Utils.SLIDER_FONT);
+			if (updateStingSize) {
+				stringWidth = g.getFontMetrics().stringWidth(line);
+				updateStingSize = false;
+			}
+
+			summ = norm(summ);
+			backColor = new Color(summ, 50, 50, 128);
 			g.setColor(backColor);
 
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
 			cprogress = (float) Utils.lerp(cprogress, Destprogress, 0.05);
+
 			g.setColor(Utils.PROGRESS_COLOR);
 			g.fillRect(0, 3, (int) cprogress, 14);
-
-			if (presset > -1 && this.isEnabled()) {
-				if (presset > cprogress) {
-					g.setColor(Utils.PRESET_COLOR);
-				} else {
-					g.setColor(Utils.BACK_PRESET_COLOR);
-				}
-				g.fillRect((int) cprogress, 5, (int) (presset - cprogress), 10);
-			}
-			g.setColor(Utils.DEST_COLOR);
-
-			g.fillRect((int) (cprogress - 3), 1, 5, 18);
 
 			summ = 0;
 
@@ -103,6 +101,13 @@ public class SlideLinePanel extends Canvas implements Runnable {
 
 				}
 
+				if (presset > -1 && this.isEnabled()) {
+					curPresset = (float) Utils.lerp(curPresset, presset, 0.4);
+					g.setColor(Utils.PRESET_COLOR);
+					g.fillRect((int) cprogress, 5, (int) (curPresset - cprogress), 10);
+				}
+				g.setColor(Utils.DEST_COLOR);
+				g.fillRect((int) (cprogress - 3), 1, 5, 18);
 			}
 
 			///////
@@ -115,26 +120,42 @@ public class SlideLinePanel extends Canvas implements Runnable {
 				}
 			}
 
-			g.setFont(Utils.SLIDER_FONT);
 			g.setColor(Color.white);
 			g.drawString(line, (int) x, Utils.SLIDER_FONT.getSize());
 
 			if (isPaint) {
-				if (!back) {
 
-					if (x < this.getWidth()) {
-						x++;
+				if (stringWidth < 393) {
+					if (!back) {
+						if (x < 393 - stringWidth) {
+							x++;
+						} else {
+							back = true;
+						}
 					} else {
-						back = true;
+						if (x > 0) {
+							x--;
+						} else {
+							back = false;
+						}
 					}
 
 				} else {
-
-					if (x > g.getFontMetrics().stringWidth(line) * -1) {
-						x--;
+					if (!back) {
+						if (x < 30) {
+							x++;
+						} else {
+							back = true;
+						}
 					} else {
-						back = false;
+						if (x > stringWidth * -1 + 362) {
+							x--;
+						} else {
+							back = false;
+						}
+
 					}
+
 				}
 				isPaint = false;
 			}
@@ -149,8 +170,10 @@ public class SlideLinePanel extends Canvas implements Runnable {
 
 	}
 
+	// Setters
 	public void setPresset(int pr) {
-		presset = pr;
+		presset = pr > 392 || pr < 0 ? -1 : pr;
+
 	}
 
 	public void clearPreset() {
@@ -158,45 +181,61 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	}
 
 	public void setValue(int ps) {
-
-		if (ps > 392 || ps < 0) {
-			Destprogress = 0;
-		} else {
-			Destprogress = ps;
-		}
+		Destprogress = ps > 392 || ps < 0 ? -1 : ps;
 
 	}
 
+	public void UpdateSpec(byte[] indat) {
+		if (indat.length >= 404) {
+			this.samples = indat;
+		}
+	}
+
+	public void setRunning(boolean b) {
+		isRunning = b;
+	}
+
+	public void setName(String s) {
+		line = s.substring(0, s.lastIndexOf("."));
+		updateStingSize = true;
+
+	}
+
+	// Getters
 	public int getValue() {
 		return Destprogress;
 	}
 
+	public boolean isInit() {
+		return init;
+	}
+
+	// local
 	public void init() {
-		createBufferStrategy(2);
-		bfs = getBufferStrategy();
-		init = true;
-		repaint();
+
+		// todo make reinit
+
+		try {
+			createBufferStrategy(2);
+			bfs = getBufferStrategy();
+			init = true;
+			repaint();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	@Override
 	public void run() {
-
-	
-		
 		while (isRunning) {
 			if (init) {
 				this.isPaint = true;
 				render();
 			}
-			Utils.sleep(45);
+			Utils.sleep(42);
 
 		}
-	}
-
-	public void UpdateSpec(byte[] indat) {
-		this.samples = indat;
-
 	}
 
 	public void resetAll(boolean b) {
@@ -205,10 +244,6 @@ public class SlideLinePanel extends Canvas implements Runnable {
 			back = false;
 		}
 		samples = new byte[404];
-	}
-
-	public void setName(String s) {
-		line = s.substring(0, s.lastIndexOf("."));
 	}
 
 	public int norm(int i) {
