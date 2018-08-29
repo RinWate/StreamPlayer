@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
-import ru.rinpolz.streamplayer.graphics.VisualWorker;
 import ru.rinpolz.streamplayer.mainlogic.Client;
 import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Server;
