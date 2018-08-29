@@ -36,7 +36,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	int arreyOffset = 0;
 
 	public SlideLinePanel() {
-		this.setBackground(Color.DARK_GRAY);
+		this.setBackground(Color.BLUE);
 		this.setIgnoreRepaint(true);
 		this.setFocusable(false);
 		this.setEnabled(false);
