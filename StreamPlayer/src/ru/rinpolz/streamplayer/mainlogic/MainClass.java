@@ -3,6 +3,7 @@ package ru.rinpolz.streamplayer.mainlogic;
 import java.io.File;
 
 import ru.rinpolz.streamplayer.gui.GUILogin;
+import ru.rinpolz.streamplayer.gui.GUIServer;
 import ru.rinpolz.streamplayer.hotkeys.JKeyType;
 import ru.rinpolz.streamplayer.resources.ResourceLoader;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
@@ -23,7 +24,7 @@ public class MainClass {
 
 	public static void main(String[] args) {
 
-		// new GUIServer("DEBUG").showGUI();
+		new GUIServer("DEBUG").showGUI();
 
 		System.setProperty("sun.awt.noerasebackground", "true");
 		System.setProperty("sun.java2d.opengl", "true");
