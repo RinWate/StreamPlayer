@@ -78,8 +78,9 @@ public class Client extends Thread {
 
 	@Override
 	public void run() {
-
 		this.setPriority(MAX_PRIORITY);
+		this.setName("Client player");
+		
 		MainClass.isRemote = false;
 		MainClass.login.setButtonStatus(false);
 
@@ -88,7 +89,7 @@ public class Client extends Thread {
 		retry = 3;
 		while (retry <= 3) {
 			try {
-				System.out.println("Реккрнет");
+				System.out.println("Recconected");
 				isConnected = false;
 				sc = SocketChannel.open();
 				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 3000);
@@ -113,13 +114,10 @@ public class Client extends Thread {
 				input = new ClientInputReader(sc);
 
 				while (!isError) {
-
-					/////// Первый покет
-
 					PacketTrack startPack = null;
 					gui.l_status.setText("Status: Synchronization");
 
-					// TODO loop
+					// TODO loop !infinity! may lagged
 					while (startPack == null) {
 						startPack = input.getData();
 						Utils.sleep(17);
@@ -169,7 +167,7 @@ public class Client extends Thread {
 
 								uiUpdate++;
 
-								// КонецТрека
+							
 
 								/// ТУТ КЭКК
 								if (i.netCode == NetCodes.ENDED) {
@@ -181,7 +179,6 @@ public class Client extends Thread {
 
 								// TODO ТУТ
 								if (i.netCode != NetCodes.PAUSED && i.leg != -1) {
-
 									clipSDL.start();
 									clipSDL.write(i.data, 0, i.leg);
 									gui.sl_currentSong.UpdateSpec(i.data);
@@ -217,7 +214,7 @@ public class Client extends Thread {
 
 								if (nonReadebleCycles > 100) {
 									gui.l_status.setText("No data available...");
-									// gui.pr_bar.setIndeterminate(true);
+									//gui.pr_bar.setIndeterminate(true);
 
 								}
 								if (nonReadebleCycles > 400) {

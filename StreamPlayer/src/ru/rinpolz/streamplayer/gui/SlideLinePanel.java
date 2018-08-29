@@ -14,9 +14,11 @@ import ru.rinpolz.streamplayer.utill.Utils;
 public class SlideLinePanel extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 
-	static BufferStrategy bf;
+	Color backColor;
 
-	public byte[] arr;
+	static BufferStrategy bfs;
+
+	public byte[] samples;
 	public String line = " ";
 
 	public boolean init = false;
@@ -25,14 +27,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	public boolean isRunning = false;
 	public boolean back = false;
 
-	Color pColor = new Color(245, 155, 5, 130);
-	
-	Color dColor = new Color(255, 5, 0, 200);
-
 	int presset = -1;
-
-	Color prColor = new Color(255, 230, 5, 130);
-	Color bprColor = new Color(15, 91, 255, 150);
 
 	float cprogress = 0;
 	int Destprogress = 0;
@@ -52,33 +47,33 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	public void render() {
 
 		try {
-			Graphics g = bf.getDrawGraphics();
-			// ( ͡° ͜ʖ ͡° )
-			
+			backColor = new Color(summ, 50, 50, 128);
+			Graphics g = bfs.getDrawGraphics();
 			summ = norm(summ);
-			VisualWorker.CreateParticles(summ);
 
-			g.setColor(new Color(summ, 50, 50, 128));
+			g.setColor(backColor);
+
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
 			cprogress = (float) Utils.lerp(cprogress, Destprogress, 0.05);
-			g.setColor(pColor);
+			g.setColor(Utils.PROGRESS_COLOR);
 			g.fillRect(0, 3, (int) cprogress, 14);
 
-			if (presset > -1&&this.isEnabled()) {
+			if (presset > -1 && this.isEnabled()) {
 				if (presset > cprogress) {
-					g.setColor(prColor);
+					g.setColor(Utils.PRESET_COLOR);
 				} else {
-					g.setColor(bprColor);
+					g.setColor(Utils.BACK_PRESET_COLOR);
 				}
 				g.fillRect((int) cprogress, 5, (int) (presset - cprogress), 10);
 			}
-			g.setColor(dColor);
+			g.setColor(Utils.DEST_COLOR);
+
 			g.fillRect((int) (cprogress - 3), 1, 5, 18);
 
 			summ = 0;
 
-			if (arr != null) {
+			if (samples != null) {
 				// Visual
 				int off = -3;
 				boolean flag = true;
@@ -92,7 +87,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 				for (int i = arreyOffset; i < 404; i++) {
 
 					if (i % 2 != 0) {
-						int l = Math.abs(arr[i]) / 8;
+						int l = Math.abs(samples[i]) / 8;
 						summ += l;
 						if (flag) {
 							g.setColor(Color.orange);
@@ -145,7 +140,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 				isPaint = false;
 			}
 
-			bf.show();
+			bfs.show();
 			g.dispose();
 
 		} catch (Exception e) {
@@ -179,7 +174,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 
 	public void init() {
 		createBufferStrategy(2);
-		bf = getBufferStrategy();
+		bfs = getBufferStrategy();
 		init = true;
 		repaint();
 
@@ -188,6 +183,8 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	@Override
 	public void run() {
 
+	
+		
 		while (isRunning) {
 			if (init) {
 				this.isPaint = true;
@@ -199,7 +196,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	}
 
 	public void UpdateSpec(byte[] indat) {
-		this.arr = indat;
+		this.samples = indat;
 
 	}
 
@@ -208,7 +205,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 			x = 0;
 			back = false;
 		}
-		arr = new byte[404];
+		samples = new byte[404];
 	}
 
 	public void setName(String s) {

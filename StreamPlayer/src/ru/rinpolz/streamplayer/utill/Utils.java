@@ -1,5 +1,6 @@
 package ru.rinpolz.streamplayer.utill;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.io.File;
@@ -16,7 +17,7 @@ import org.tritonus.share.sampled.file.TAudioFileFormat;
 public abstract class Utils {
 
 	public static Random random = new Random();
-	
+
 	public static final String PLAY = "Playing";
 	public static final String PAUSE = "Pause";
 	public static final String VERSION = "1.9 PR";
@@ -28,6 +29,15 @@ public abstract class Utils {
 	public static final Font LABEL_FONT = new Font("Arial", 2, 11);
 	public static final Font SLIDER_FONT = new Font("LucidaSans", Font.BOLD, 15);
 
+	public static final Color PROGRESS_COLOR = new Color(245, 155, 5, 130);
+	public static final Color DEST_COLOR = new Color(255, 5, 0, 200);
+
+	public static final Color PRESET_COLOR = new Color(255, 230, 5, 130);
+	public static final Color BACK_PRESET_COLOR = new Color(15, 91, 255, 150);
+
+	
+	
+	
 	public static double map(double n, double start1, double stop1, double start2, double stop2) {
 		return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
 	}
@@ -39,7 +49,8 @@ public abstract class Utils {
 	public static void sleep(int tims) {
 		try {
 			Thread.sleep(tims);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+		}
 	}
 
 	public static String getDuration(File file) {
