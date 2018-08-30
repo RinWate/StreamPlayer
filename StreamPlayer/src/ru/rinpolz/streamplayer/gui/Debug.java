@@ -16,6 +16,7 @@ public class Debug {
 		mainframe.setLocationRelativeTo(null);
 		mainframe.setVisible(false);
 		
+	
 		mainframe.add(l_debug);
 		l_debug.setBounds(3, -15, 110, 100);
 	}

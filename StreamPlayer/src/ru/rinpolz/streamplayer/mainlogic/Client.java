@@ -33,62 +33,58 @@ public class Client extends Thread {
 	VolumeController controll = new VolumeController(false);
 
 	// Максимальный размер пакета
-	public static int SIZE = 8192;
+	
 
 	int nonReadebleCycles = 0;
-
 	int uiUpdate = 0;
-
 	byte retry = 0;
 
-	public static SourceDataLine clipSDL;
+	SourceDataLine clipSDL;
+	ClientInputReader input;
+	AudioFormat decodedFormat;
 
-	public static ClientInputReader input;
-
-	public static AudioFormat decodedFormat;
-
-	public static int last = 0;
-	public static boolean isMute = false;
+	static int last = 0;
+	static boolean isMute = false;
 
 	public static boolean isPaised = false;
 
-	static boolean statuschanged = false;
+	boolean statuschanged = false;
 
-	public static SocketChannel sc;
-	public static boolean isConnected = false;
-	public static boolean isError = false;
+	SocketChannel sc;
+	boolean isConnected = false;
+	boolean isError = false;
 
 	float samplerate = 0;
 
-	public static boolean hasLag = false;
-
 	public static GUIClient gui = new GUIClient("StreamPlayer Client");
-	public static FloatControl volume;
+	static FloatControl volume;
 
 	byte errorid = 0;
 
 	// DBG
-	public static long readed = 0;
-	public static long acceped = 0;
-	public static long resets = 0;
-	public static long skipped = 0;
+	long readed = 0;
+	long acceped = 0;
+	long resets = 0;
+	long skipped = 0;
 
 	Thread lineupdater = new Thread(gui.sl_currentSong);
 	StatUsParser parser = new StatUsParser();
 
 	@Override
 	public void run() {
-
+		lineupdater.setPriority(NORM_PRIORITY);
 		this.setPriority(MAX_PRIORITY);
+		this.setName("Client player");
+
 		MainClass.isRemote = false;
 		MainClass.login.setButtonStatus(false);
+		gui.sl_currentSong.setRunning(true);
 
-		gui.sl_currentSong.isRunning = true;
 		lineupdater.start();
 		retry = 3;
 		while (retry <= 3) {
 			try {
-				System.out.println("Реккрнет");
+				System.out.println("Recconected");
 				isConnected = false;
 				sc = SocketChannel.open();
 				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 3000);
@@ -100,7 +96,7 @@ public class Client extends Thread {
 					isError = false;
 					MainClass.login.setVisible(false);
 					gui.showGUI();
-					if (!gui.sl_currentSong.init) {
+					if (!gui.sl_currentSong.isInit()) {
 						gui.sl_currentSong.init();
 
 					}
@@ -113,13 +109,10 @@ public class Client extends Thread {
 				input = new ClientInputReader(sc);
 
 				while (!isError) {
-
-					/////// Первый покет
-
 					PacketTrack startPack = null;
 					gui.l_status.setText("Status: Synchronization");
 
-					// TODO loop
+					// TODO loop !infinity! may lagged
 					while (startPack == null) {
 						startPack = input.getData();
 						Utils.sleep(17);
@@ -149,8 +142,8 @@ public class Client extends Thread {
 						try {
 
 							Debug.l_debug.setText("<html> IP/Port: " + MainClass.ip + ":" + MainClass.port + " Readed: "
-									+ Client.readed + " Accepted: " + Client.acceped + " Resets: " + Client.resets
-									+ " Skipped: " + Client.skipped + "</html>");
+									+ readed + " Accepted: " + acceped + " Resets: " + resets + " Skipped: " + skipped
+									+ "</html>");
 
 							skipped = acceped - readed;
 
@@ -169,8 +162,6 @@ public class Client extends Thread {
 
 								uiUpdate++;
 
-								// КонецТрека
-
 								/// ТУТ КЭКК
 								if (i.netCode == NetCodes.ENDED) {
 									Client.gui.sl_currentSong.resetAll(false);
@@ -181,7 +172,6 @@ public class Client extends Thread {
 
 								// TODO ТУТ
 								if (i.netCode != NetCodes.PAUSED && i.leg != -1) {
-
 									clipSDL.start();
 									clipSDL.write(i.data, 0, i.leg);
 									gui.sl_currentSong.UpdateSpec(i.data);
@@ -221,7 +211,7 @@ public class Client extends Thread {
 
 								}
 								if (nonReadebleCycles > 400) {
-									gui.sl_currentSong.line = "";
+									gui.sl_currentSong.resetAll(true);
 									throw new TimeoutException();
 								}
 
@@ -275,7 +265,7 @@ public class Client extends Thread {
 
 		isError = true;
 		gui.l_status.setText("Status: error...");
-		gui.sl_currentSong.isRunning = false;
+		gui.sl_currentSong.setRunning(false);
 		gui.dispose();
 		MainClass.login.setVisible(true);
 		MainClass.login.setButtonStatus(true);

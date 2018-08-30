@@ -175,6 +175,12 @@ public class GUIServer extends JFrame {
 		});
 		//// >
 		sl_currentSong.addMouseListener(new SMouseListener() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				sl_currentSong.reposPresset();
+			}
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.isShiftDown() && sl_currentSong.isEnabled()) {
@@ -232,7 +238,16 @@ public class GUIServer extends JFrame {
 		b_openfolder.addActionListener(e -> {
 			if (Desktop.isDesktopSupported()) {
 				desktop = Desktop.getDesktop();
+
 				try {
+
+					// Windows
+					// Runtime.getRuntime().exec("explorer.exe /select," +
+					// Server.CurrentTrack.getAbsolutePath());
+					// Mac
+					// Runtime.getRuntime().exec("open -R filename" +
+					// Server.CurrentTrack.getAbsolutePath());
+
 					desktop.open(MainClass.lastpth);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -331,8 +346,7 @@ public class GUIServer extends JFrame {
 		this.add(b_replay);
 		b_replay.setIcon(MainClass.rl.getImage("replay"));
 		b_replay.setBounds(239, 35, 30, 25);
-		
-		
+
 		b_replay.addActionListener(e -> {
 			if (hasReplay) {
 				b_replay.setIcon(MainClass.rl.getImage("replay"));

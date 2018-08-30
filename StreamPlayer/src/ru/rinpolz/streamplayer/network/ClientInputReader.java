@@ -10,17 +10,18 @@ import ru.rinpolz.streamplayer.mainlogic.VolumeController;
 
 public class ClientInputReader extends Thread {
 
-	public static int buff = 0;
-	public ArrayList<PacketTrack> InputBuffer = new ArrayList<>();
+	final int SIZE = 8192;
+	//// TODO REWORCK
+	public static boolean hasSkip = false;
+
+	int buff = 0;
+	ArrayList<PacketTrack> InputBuffer = new ArrayList<>();
 
 	Exception Ex;
 	PacketTrack packet;
 	SocketChannel channel;
-	boolean isError = false;
 
-	public static boolean hasSkip = false;
-
-	public ByteBuffer buf = ByteBuffer.allocate(Client.SIZE);
+	ByteBuffer buf = ByteBuffer.allocate(SIZE);
 	ByteBuffer some = ByteBuffer.allocate(1);
 
 	public ClientInputReader(SocketChannel socket) throws IOException {
@@ -43,7 +44,6 @@ public class ClientInputReader extends Thread {
 
 					packet = (PacketTrack) Client.convertFromBytes(buf);
 
-					// TODO рср
 					if (packet.netCode == NetCodes.POS_CHANGED || InputBuffer.size() > 20) {
 						Client.gui.sl_currentSong.resetAll(false);
 						refresh();
@@ -77,7 +77,7 @@ public class ClientInputReader extends Thread {
 
 		InputBuffer.clear();
 		VolumeController.unmute();
-		Client.resets++;
+
 	}
 
 	public boolean hasDataAvailable() {
@@ -97,7 +97,6 @@ public class ClientInputReader extends Thread {
 			if (!InputBuffer.isEmpty()) {
 				PacketTrack temp = InputBuffer.get(0);
 				InputBuffer.remove(0);
-				Client.acceped++;
 				return temp;
 			} else {
 				return null;
