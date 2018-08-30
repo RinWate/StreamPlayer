@@ -41,7 +41,10 @@ public class FileList {
 	public FileList() {
 
 		fr.setSize(500, 500);
+		
 		fr.setIconImage(new ImageIcon(getClass().getResource("open.png")).getImage());
+		
+		
 		fr.setResizable(false);
 		fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fr.setLocationRelativeTo(Server.gui);
