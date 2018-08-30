@@ -171,6 +171,11 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	}
 
 	// Setters
+
+	public void reposPresset() {
+		curPresset = cprogress;
+	}
+
 	public void setPresset(int pr) {
 		presset = pr > 392 || pr < 0 ? -1 : pr;
 

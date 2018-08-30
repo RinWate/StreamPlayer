@@ -175,6 +175,12 @@ public class GUIServer extends JFrame {
 		});
 		//// >
 		sl_currentSong.addMouseListener(new SMouseListener() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				sl_currentSong.reposPresset();
+			}
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.isShiftDown() && sl_currentSong.isEnabled()) {
