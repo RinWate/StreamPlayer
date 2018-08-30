@@ -6,6 +6,7 @@ public class TrashGrabber extends Thread {
 		this.setName("PoooP-Grab");
 		while (true) {
 			try {
+				///dd
 				Thread.sleep(10000);
 				System.gc();
 			} catch (InterruptedException e) {
