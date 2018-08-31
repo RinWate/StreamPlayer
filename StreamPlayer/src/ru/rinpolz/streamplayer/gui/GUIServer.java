@@ -38,6 +38,7 @@ import ru.rinpolz.streamplayer.mainlogic.Settings;
 import ru.rinpolz.streamplayer.mainlogic.VolumeController;
 import ru.rinpolz.streamplayer.trackControl.FileList;
 import ru.rinpolz.streamplayer.util.Utils;
+import ru.rinwate.streamplayer.language.LanguageManager;
 
 public class GUIServer extends JFrame {
 	
