@@ -36,12 +36,12 @@ public class ResizerWorker extends Thread {
 
 		if (dir) {
 
-			hight = 305;
+			hight = 306;
 			dest = 545;
 		} else {
 
 			hight = 545;
-			dest = 305;
+			dest = 306;
 
 		}
 

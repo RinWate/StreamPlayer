@@ -29,7 +29,8 @@ public class Settings {
 			, 1, 40 // Volume-Up 8
 			, 1, 34 };
 
-	public static boolean isShaking = false;
+	//public static boolean isShaking = false;
+	
 	public static boolean isRamdOld = false;
 	public static boolean isDebug = false;
 	public static boolean isShowFormat = false;
@@ -67,7 +68,7 @@ public class Settings {
 
 	private JLabel l_replay = new JLabel("Replay Key:");
 
-	public static JCheckBox cb_shaking = new JCheckBox("Shaking");
+	//public static JCheckBox cb_shaking = new JCheckBox("Shaking");
 	public static JCheckBox cb_oldRamdom = new JCheckBox("OldRmd");
 	public static JCheckBox cb_debug = new JCheckBox("Debug");
 	public static JCheckBox cb_fileformat = new JCheckBox("File Formats");
@@ -117,7 +118,7 @@ public class Settings {
 		mainframe.add(box_replay);
 		mainframe.add(set_replay);
 
-		mainframe.add(cb_shaking);
+		//mainframe.add(cb_shaking);
 		mainframe.add(cb_oldRamdom);
 		mainframe.add(cb_debug);
 		mainframe.add(cb_fileformat);
@@ -153,7 +154,7 @@ public class Settings {
 		box_replay.setBounds(10, 250, 75, 20);
 		set_replay.setBounds(100, 250, 75, 20);
 
-		cb_shaking.setBounds(10, 275, 100, 20);
+		//cb_shaking.setBounds(10, 275, 100, 20);
 		cb_oldRamdom.setBounds(110, 275, 100, 20);
 		cb_debug.setBounds(110, 295, 100, 20);
 		cb_fileformat.setBounds(10, 295, 125, 20);
@@ -241,9 +242,9 @@ public class Settings {
 			mainframe.setEnabled(false);
 		});
 
-		cb_shaking.addActionListener(e -> {
-			isShaking = cb_shaking.isSelected();
-		});
+//		cb_shaking.addActionListener(e -> {
+//			isShaking = cb_shaking.isSelected();
+//		});
 
 		cb_oldRamdom.addActionListener(e -> {
 			isRamdOld = cb_oldRamdom.isSelected();
@@ -289,7 +290,7 @@ public class Settings {
 				, 1, 34 };
 
 		isRamdOld = false;
-		isShaking = false;
+		//isShaking = false;
 		isAllowClientSkip = true;
 		isDebug = false;
 		isShowFormat = false;
@@ -328,7 +329,7 @@ public class Settings {
 		box_replay.setSelectedIndex(cheks(keys[10]));
 		SetButtonName(set_replay, KeyEvent.getKeyText(keys[11]));
 
-		cb_shaking.setSelected(isShaking);
+		//cb_shaking.setSelected(isShaking);
 		cb_oldRamdom.setSelected(isRamdOld);
 
 	}

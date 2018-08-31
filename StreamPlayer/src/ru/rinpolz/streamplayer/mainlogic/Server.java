@@ -34,9 +34,9 @@ public class Server extends Thread {
 	String duration = "";
 	VolumeController controll = new VolumeController(true);
 
-	
 	ByteBuffer sendbuffer = ByteBuffer.allocate(SIZE);
-	ByteBuffer someshut = ByteBuffer.allocate(1024);
+
+	ByteBuffer inputCommandBuffer = ByteBuffer.allocate(1);
 
 	public static int lastvolume = 0;
 
@@ -168,7 +168,8 @@ public class Server extends Thread {
 			DecodedMpegAudioInputStream din = new DecodedMpegAudioInputStream(decodedFormat, in);
 
 			equalizer = (float[]) (din.properties().get("mp3.equalizer"));
-			Equalizer.RefreshEqualizer();
+
+			// Equalizer.RefreshEqualizer();
 
 			duration = Utils.getDuration(f);
 			trackSizeInmicros = Utils.getMs(f);
@@ -249,7 +250,9 @@ public class Server extends Thread {
 
 					gui.sl_currentSong.UpdateSpec(data);
 					Output.write(data, 0, num);
+
 					num = din.read(data);
+
 					forAllClients(createPack());
 					isPosCha = false;
 
@@ -408,14 +411,33 @@ public class Server extends Thread {
 
 	}
 
+	public void proccesCommand(byte com) {
+		switch (com) {
+		case NetCodes.TS_SKIP:
+			isSkip = true;
+			break;
+		case NetCodes.TS_REPLAY:
+			isReplaed = true;
+			isSkip = true;
+			break;
+
+		default:
+			break;
+		}
+
+	}
+
 	public void forAllClients(PacketTrack pac) {
 		for (ClientConnection k : ClientListener.ÑlientsConnections) {
 			try {
 				k.connection.write(createDataPack(createPack()));
 
-				if (k.connection.isConnected() && k.connection.read(someshut) > 0) {
-					someshut.rewind();
-					isSkip = true;
+				if (!inputCommandBuffer.hasRemaining()) {
+					inputCommandBuffer.flip();
+					proccesCommand(inputCommandBuffer.get());
+					inputCommandBuffer.rewind();
+				} else {
+					k.connection.read(inputCommandBuffer);
 				}
 
 				k.connection.socket().getOutputStream().flush();
