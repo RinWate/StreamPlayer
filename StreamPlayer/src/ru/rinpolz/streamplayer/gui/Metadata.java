@@ -1,8 +1,5 @@
 package ru.rinpolz.streamplayer.gui;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import javax.swing.JFrame;
 
 import ru.rinpolz.streamplayer.mainlogic.Server;
@@ -23,18 +20,11 @@ public class Metadata extends JFrame {
 		this.setLayout(null);
 		this.setLocationRelativeTo(null);
 		
-		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				Server.gui.b_metadata.setEnabled(true);
-			}
-		});
-		
 		this.setVisible(false);
 	}
 	
 	public void showData() {
-		this.setLocation(Server.gui.getLocation().x - 215, Server.gui.getLocation().y);
-		this.setVisible(true);
 		Server.gui.b_metadata.setEnabled(false);
+		this.setVisible(true);
 	}
 }

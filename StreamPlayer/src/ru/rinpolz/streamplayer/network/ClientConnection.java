@@ -2,7 +2,7 @@ package ru.rinpolz.streamplayer.network;
 
 import java.nio.channels.SocketChannel;
 
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class ClientConnection {
 

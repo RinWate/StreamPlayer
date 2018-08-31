@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.ImageIcon;
 
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class VisualWorker extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;

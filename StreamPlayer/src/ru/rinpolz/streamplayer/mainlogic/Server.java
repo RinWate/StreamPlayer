@@ -21,9 +21,9 @@ import ru.rinpolz.streamplayer.network.ClientListener;
 import ru.rinpolz.streamplayer.network.NetCodes;
 import ru.rinpolz.streamplayer.network.PacketTrack;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
-import ru.rinpolz.streamplayer.trackControll.FileList;
-import ru.rinpolz.streamplayer.trackControll.Track;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.trackControl.FileList;
+import ru.rinpolz.streamplayer.trackControl.Track;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class Server extends Thread {
 

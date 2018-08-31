@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Server;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class ResizerWorker extends Thread {
 	static volatile boolean isDone = true;

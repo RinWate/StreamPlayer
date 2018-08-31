@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class Particles {
 

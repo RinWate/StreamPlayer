@@ -20,14 +20,13 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.swing.JOptionPane;
 
-import ru.rinpolz.streamplayer.gui.Debug;
 import ru.rinpolz.streamplayer.gui.GUIClient;
 import ru.rinpolz.streamplayer.network.ClientInputReader;
 import ru.rinpolz.streamplayer.network.NetCodes;
 import ru.rinpolz.streamplayer.network.PacketTrack;
 import ru.rinpolz.streamplayer.network.StatUsParser;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class Client extends Thread {
 	VolumeController controll = new VolumeController(false);
@@ -147,10 +146,6 @@ public class Client extends Thread {
 
 					while (!isError) {
 						try {
-
-							Debug.l_debug.setText("<html> IP/Port: " + MainClass.ip + ":" + MainClass.port + " Readed: "
-									+ Client.readed + " Accepted: " + Client.acceped + " Resets: " + Client.resets
-									+ " Skipped: " + Client.skipped + "</html>");
 
 							skipped = acceped - readed;
 

@@ -36,19 +36,15 @@ import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Server;
 import ru.rinpolz.streamplayer.mainlogic.Settings;
 import ru.rinpolz.streamplayer.mainlogic.VolumeController;
-import ru.rinpolz.streamplayer.trackControll.FileList;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.trackControl.FileList;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class GUIServer extends JFrame {
-
+	
 	public boolean hasReplay = false;
-
 	public static String Search_text = "";
-
 	Desktop desktop = null;
-
 	private static final long serialVersionUID = 6604939069695118255L;
-
 	boolean isShow = false;
 
 	public SlideLinePanel sl_currentSong = new SlideLinePanel();
@@ -58,30 +54,25 @@ public class GUIServer extends JFrame {
 	public JButton b_play = new JButton(MainClass.rl.getImage("pause"));
 	public JButton b_next = new JButton(MainClass.rl.getImage("next"));
 	public JButton b_mute = new JButton(MainClass.rl.getImage("unmute"));
-
-	public JSlider s_volume = new JSlider();
-
-	public JButton b_replay = new JButton();
+	public JButton b_replay = new JButton(MainClass.rl.getImage("replay"));
 	public JButton b_delete = new JButton(MainClass.rl.getImage("delete"));
 	public JButton b_settings = new JButton(MainClass.rl.getImage("gear"));
 	public JButton b_openfolder = new JButton(MainClass.rl.getImage("open"));
 	public JButton b_set = new JButton(MainClass.rl.getImage("folder"));
 	public JButton b_reload = new JButton(MainClass.rl.getImage("reload"));
-
 	public JButton b_goto = new JButton(MainClass.rl.getImage("goto"));
-
+	public JButton b_equal = new JButton(MainClass.rl.getImage("equ"));
+	public JButton b_metadata = new JButton("Metadata");
+	
 	public JLabel l_online = new JLabel("Online: ");
 	public JLabel l_status = new JLabel("Status: ");
 	public JLabel l_trackcount = new JLabel(">?<");
-
 	public JLabel l_timer = new JLabel("00:00|00:00", SwingConstants.CENTER);
-
-	public JButton b_equal = new JButton(MainClass.rl.getImage("equ"));
-
-	public JButton b_metadata = new JButton("Metadata");
+	public JLabel l_timing = new JLabel("--:--");
+	
 	public Equalizer equalizer = new Equalizer(this, 300);
 	public JTextField tf_search = new JTextField();
-	public JLabel l_timing = new JLabel("--:--");
+	public JSlider s_volume = new JSlider();
 
 	public GUIServer(String name) {
 		System.out.println("Init Server GUI...");
@@ -94,7 +85,7 @@ public class GUIServer extends JFrame {
 		this.setLayout(null);
 		this.setResizable(false);
 
-		/////////////////// Labels,chb//////////////////
+		/////////////////// Labels & Checkboxes //////////////////
 
 		this.add(sl_currentSong);
 		sl_currentSong.setBounds(1, 14, 392, 20);
@@ -139,13 +130,11 @@ public class GUIServer extends JFrame {
 					sl_currentSong.resetAll(false);
 					Server.isSet = true;
 					Server.isSkip = true;
-
 				}
 			}
 		});
 		//// >
 		list_music.addKeyListener(new SKeyListener() {
-			@Override
 			public void keyPressed(KeyEvent arg0) {
 
 				if (arg0.getKeyCode() == 10) {
@@ -161,7 +150,6 @@ public class GUIServer extends JFrame {
 		});
 
 		sl_currentSong.addMouseMotionListener(new SMouseMotionListener() {
-			@Override
 			public void mouseMoved(MouseEvent e) {
 				if (e.isShiftDown()) {
 					sl_currentSong.setPresset(e.getX());
@@ -173,38 +161,32 @@ public class GUIServer extends JFrame {
 				Utils.sleep(33);
 			}
 		});
-		//// >
 		sl_currentSong.addMouseListener(new SMouseListener() {
-			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.isShiftDown() && sl_currentSong.isEnabled()) {
 					Server.SetTrackPos(e.getX());
 				}
 			}
 
-			@Override
 			public void mouseExited(MouseEvent e) {
 				l_timing.setText("--:--");
 				sl_currentSong.clearPreset();
 			}
 		});
 
-		// Delete button///////////////////////////////////////////////////////////////
+		// Delete button
 		this.add(b_delete);
 		b_delete.setBounds(301, 35, 30, 25);
 		b_delete.setEnabled(false);
-
-		// >
 		b_delete.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!list_music.isSelectionEmpty()) {
-					File t = FileList.filelist.get(list_music.getSelectedValue()).file;
-					File ren = new File(t.getAbsolutePath() + ".dis");
+					File selected = FileList.filelist.get(list_music.getSelectedValue()).file;
+					File ren = new File(selected.getAbsolutePath() + ".dis");
 					if (!FileList.filelist.get(list_music.getSelectedValue()).file.getName()
 							.equals(Server.CurrentTrack.getName())) {
-						if (t.renameTo(ren)) {
-							FileList.filelist.remove(t.getName().substring(0, t.getName().length() - 4));
+						if (selected.renameTo(ren)) {
+							FileList.filelist.remove(selected.getName().substring(0, selected.getName().length() - 4));
 							FileList.sort(Search_text);
 							FileList.setList();
 							b_delete.setEnabled(false);
@@ -214,7 +196,7 @@ public class GUIServer extends JFrame {
 			}
 		});
 
-		// Settings button//////////////////////////////////////////////////////////
+		// Settings button
 		this.add(b_settings);
 		b_settings.setBounds(225, 250, 30, 25);
 
@@ -240,21 +222,19 @@ public class GUIServer extends JFrame {
 			}
 		});
 
-		// Slider Volume/////////////////////////////
+		// Slider Volume
 		this.add(s_volume);
 		s_volume.setMaximum(90);
 		s_volume.setBounds(288, 250, 105, 25);
 		s_volume.setBackground(Color.lightGray);
 		// >
 		s_volume.addChangeListener(new ChangeListener() {
-			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				VolumeController.SetVolume(s_volume.getValue());
 			}
 		});
 		//// >
 		s_volume.addMouseWheelListener(new MouseWheelListener() {
-			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if (s_volume.isEnabled()) {
 					byte how = 5;
@@ -275,7 +255,6 @@ public class GUIServer extends JFrame {
 		tf_search.setBounds(2, 35, 236, 25);
 		tf_search.setFont(Utils.STANDART_FONT);
 		tf_search.addCaretListener(new CaretListener() {
-			@Override
 			public void caretUpdate(CaretEvent arg0) {
 				Search_text = tf_search.getText().toLowerCase();
 				list_music.clearSelection();
@@ -286,9 +265,7 @@ public class GUIServer extends JFrame {
 			}
 		});
 
-		//// >
 		tf_search.addKeyListener(new SKeyListener() {
-			@Override
 			public void keyTyped(KeyEvent e) {
 				if (tf_search.getText().length() >= 255) {
 					e.consume();
@@ -297,7 +274,6 @@ public class GUIServer extends JFrame {
 				}
 			}
 
-			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == 10 || e.getKeyCode() == 40) {
 					list_music.requestFocus();
@@ -329,10 +305,7 @@ public class GUIServer extends JFrame {
 
 		// Replay Button
 		this.add(b_replay);
-		b_replay.setIcon(MainClass.rl.getImage("replay"));
 		b_replay.setBounds(239, 35, 30, 25);
-		
-		
 		b_replay.addActionListener(e -> {
 			if (hasReplay) {
 				b_replay.setIcon(MainClass.rl.getImage("replay"));
@@ -341,7 +314,6 @@ public class GUIServer extends JFrame {
 				b_replay.setIcon(MainClass.rl.getImage("replay_e"));
 				hasReplay = true;
 			}
-
 		});
 
 		// Metadata Button
@@ -371,9 +343,7 @@ public class GUIServer extends JFrame {
 
 		// Mute button
 		this.add(b_mute);
-
 		b_mute.setBounds(256, 250, 30, 25);
-		// >
 		b_mute.addActionListener(e -> {
 			Server.mute();
 		});
@@ -396,19 +366,16 @@ public class GUIServer extends JFrame {
 		// GoTO button
 		this.add(b_goto);
 		b_goto.setBounds(270, 35, 30, 25);
+		b_goto.setToolTipText("Selects track which is currently playing");
 		b_goto.addActionListener(e -> {
-			// TODO SOMETEST
 			list_music.setSelectedValue(
 					Server.CurrentTrack.getName().substring(0, Server.CurrentTrack.getName().length() - 4), true);
-
 		});
-
 	}
 
 	public void showGUI() {
 		this.setVisible(true);
 		try {
-			// 4
 			this.createBufferStrategy(2);
 		} catch (Exception e) {
 			System.err.println("≈банные буферы");
@@ -417,11 +384,9 @@ public class GUIServer extends JFrame {
 	}
 
 	public void updateDeleteButtonState() {
-
 		if (!list_music.isSelectionEmpty()) {
 			if (FileList.filelist.get(list_music.getSelectedValue()).file.getName()
 					.equals(Server.CurrentTrack.getName())) {
-
 				b_delete.setEnabled(false);
 			} else {
 				b_delete.setEnabled(true);

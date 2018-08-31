@@ -1,4 +1,4 @@
-package ru.rinpolz.streamplayer.utill;
+package ru.rinpolz.streamplayer.util;
 
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -36,9 +36,9 @@ public abstract class Utils {
 		return point1 + alpha * (point2 - point1);
 	}
 
-	public static void sleep(int tims) {
+	public static void sleep(int time_ms) {
 		try {
-			Thread.sleep(tims);
+			Thread.sleep(time_ms);
 		} catch (InterruptedException e) {}
 	}
 
@@ -69,7 +69,6 @@ public abstract class Utils {
 			// convert back
 			array[i] = (byte) res;
 			array[i + 1] = (byte) (res >> 8);
-
 		}
 		return array;
 	}
@@ -110,8 +109,8 @@ public abstract class Utils {
 		Toolkit.getDefaultToolkit().beep();
 	}
 
-	public static final int getRandom(int dest) {
-		return random.nextInt(dest) - random.nextInt(dest);
+	public static final int getRandom(int num) {
+		return random.nextInt(num) - random.nextInt(num);
 	}
 
 	public static final double getDurationOfWavInSeconds(File file) {
@@ -127,7 +126,7 @@ public abstract class Utils {
 		}
 	}
 
-	public static final int[] GetfilledArrey(int how, int leg) {
+	public static final int[] GetfilledArray(int how, int leg) {
 		int[] ar = new int[leg];
 		Arrays.fill(ar, how);
 		return ar;

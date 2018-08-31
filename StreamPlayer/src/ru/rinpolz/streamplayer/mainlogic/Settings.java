@@ -11,11 +11,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import ru.rinpolz.streamplayer.gui.Debug;
 import ru.rinpolz.streamplayer.hotkeys.HotKey;
 import ru.rinpolz.streamplayer.hotkeys.KeyChooser;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class Settings {
 	public static boolean isOpened;
@@ -31,7 +30,6 @@ public class Settings {
 
 	public static boolean isShaking = false;
 	public static boolean isRamdOld = false;
-	public static boolean isDebug = false;
 	public static boolean isShowFormat = false;
 	public static boolean isAllowClientSkip = false;
 
@@ -43,8 +41,6 @@ public class Settings {
 	public static JButton set_volume_down = new JButton("Set");
 
 	HotKey[] hotkeys = { new HotKey(1), new HotKey(2), new HotKey(4), new HotKey(8) };
-	
-	public static Debug debug = new Debug();
 
 	public static JComboBox<HotKey> box_skip = new JComboBox<>();
 	public static JComboBox<HotKey> box_pause = new JComboBox<>();
@@ -69,7 +65,6 @@ public class Settings {
 
 	public static JCheckBox cb_shaking = new JCheckBox("Shaking");
 	public static JCheckBox cb_oldRamdom = new JCheckBox("OldRmd");
-	public static JCheckBox cb_debug = new JCheckBox("Debug");
 	public static JCheckBox cb_fileformat = new JCheckBox("File Formats");
 	public static JCheckBox cb_allowskip = new JCheckBox("Radio Mod");
 
@@ -119,7 +114,6 @@ public class Settings {
 
 		mainframe.add(cb_shaking);
 		mainframe.add(cb_oldRamdom);
-		mainframe.add(cb_debug);
 		mainframe.add(cb_fileformat);
 		mainframe.add(cb_allowskip);
 		
@@ -155,16 +149,13 @@ public class Settings {
 
 		cb_shaking.setBounds(10, 275, 100, 20);
 		cb_oldRamdom.setBounds(110, 275, 100, 20);
-		cb_debug.setBounds(110, 295, 100, 20);
 		cb_fileformat.setBounds(10, 295, 125, 20);
 		cb_allowskip.setBounds(10, 315, 125, 20);
 		
-		cb_debug.setToolTipText("Client-Use Only");
 		cb_fileformat.setToolTipText("Not working");
 		cb_allowskip.setToolTipText("Allows clients to skip current track");
 		
 		cb_allowskip.setEnabled(false);
-		cb_debug.setEnabled(false);
 		cb_fileformat.setEnabled(false);
 
 		save.setBounds(10, 335, 75, 20);
@@ -249,11 +240,6 @@ public class Settings {
 			isRamdOld = cb_oldRamdom.isSelected();
 		});
 		
-		cb_debug.addActionListener(e -> {
-			isDebug = cb_debug.isSelected();
-			debug.startDebug(isDebug);
-		});
-		
 		cb_fileformat.addActionListener(e -> {
 			isShowFormat = cb_fileformat.isSelected();
 		});
@@ -291,7 +277,6 @@ public class Settings {
 		isRamdOld = false;
 		isShaking = false;
 		isAllowClientSkip = true;
-		isDebug = false;
 		isShowFormat = false;
 
 		FileLoader.saveDefault();

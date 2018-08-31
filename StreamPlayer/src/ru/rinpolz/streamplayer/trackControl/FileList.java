@@ -1,4 +1,4 @@
-package ru.rinpolz.streamplayer.trackControll;
+package ru.rinpolz.streamplayer.trackControl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

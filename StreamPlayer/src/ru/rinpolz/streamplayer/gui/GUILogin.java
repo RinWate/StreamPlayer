@@ -14,13 +14,15 @@ import ru.rinpolz.streamplayer.mainlogic.Client;
 import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Server;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class GUILogin extends JFrame {
 	private static final long serialVersionUID = 5676639024889958052L;
 
 	static JButton connect = new JButton("Connect");
 	static JButton makehost = new JButton("Start Host");
+	public JButton language_select = new JButton("Language");
+	public JButton b_news = new JButton("?");
 
 	static JTextField port = new JTextField();
 	static JTextField ip = new JTextField();
@@ -28,19 +30,14 @@ public class GUILogin extends JFrame {
 	public JLabel l_port = new JLabel("Port:");
 	public JLabel l_ip = new JLabel("IP:");
 	public JLabel welcome = new JLabel("Welcome to revolution music stream system OPG-9000");
-
 	public JLabel version = new JLabel("Version: " + Utils.VERSION);
 	public JLabel status = new JLabel();
 	public JLabel check = new JLabel();
 
-	public JButton b_news = new JButton("?");
-
 	public GUILogin() {
-
 		System.out.println("Init Login GUI...");
 
 		this.setIconImage(MainClass.rl.login_icon);
-
 		this.setSize(305, 150);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
@@ -69,10 +66,12 @@ public class GUILogin extends JFrame {
 		this.add(status);
 		status.setBounds(30, 75, 150, 25);
 		status.setFont(Utils.LABEL_FONT);
+		
+		this.add(language_select);
+		language_select.setBounds(155, 98, 100, 20);
 
 		this.add(b_news);
 		b_news.setBounds(255, 98, 40, 20);
-		// >
 		b_news.addActionListener(e -> {
 			JOptionPane.showMessageDialog(this,
 					"Changelog on 1.9: " + 
@@ -116,7 +115,6 @@ public class GUILogin extends JFrame {
 
 		this.add(makehost);
 		makehost.setBounds(188, 50, 90, 25);
-		// >
 		makehost.addActionListener(e -> {
 			if (checkCorrect()) {
 				MainClass.ip = getIp();
@@ -129,9 +127,7 @@ public class GUILogin extends JFrame {
 
 		ip.setText(MainClass.ip);
 		port.setText(MainClass.port + "");
-
 		this.setVisible(true);
-
 		try {
 			// Exception in thread "main" java.lang.ExceptionInInitializerError
 			// Caused by: java.lang.IllegalStateException: Buffers have not been created
@@ -155,7 +151,6 @@ public class GUILogin extends JFrame {
 	}
 
 	public boolean checkCorrect() {
-
 		try {
 			if (Integer.parseInt(port.getText()) > 65535) {
 				throw new Exception();
@@ -166,7 +161,6 @@ public class GUILogin extends JFrame {
 			status.setText("Enter the correct IP/Port!");
 			return false;
 		}
-
 	}
 
 	public void setPort(int porte) {

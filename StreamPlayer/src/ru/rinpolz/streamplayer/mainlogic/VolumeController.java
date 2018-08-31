@@ -1,6 +1,6 @@
 package ru.rinpolz.streamplayer.mainlogic;
 
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class VolumeController extends Thread {
 

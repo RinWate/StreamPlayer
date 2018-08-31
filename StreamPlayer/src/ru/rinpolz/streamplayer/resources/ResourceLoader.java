@@ -30,20 +30,18 @@ public class ResourceLoader {
 		RegRes("folder.png");
 		RegRes("open.png");
 		RegRes("goto.png");
-
 	}
 
 	public ImageIcon getImage(String name) {
 		return ButtonImages.get(name);
 	}
 
-	private void RegRes(String filename) {
+	void RegRes(String filename) {
 		try {
-
 			ButtonImages.put(filename.substring(0, filename.length() - 4),
 					new ImageIcon(getClass().getResource(filename)));
 		} catch (Exception e) {
-			System.err.println("Cant Load image " + filename);
+			System.err.println("Can't load image " + filename);
 			e.printStackTrace();
 		}
 

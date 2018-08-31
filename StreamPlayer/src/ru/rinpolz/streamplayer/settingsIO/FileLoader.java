@@ -13,7 +13,7 @@ import ru.rinpolz.streamplayer.equalizer.Equalizer;
 import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Settings;
 import ru.rinpolz.streamplayer.mainlogic.VolumeController;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class FileLoader {
 
@@ -27,12 +27,8 @@ public class FileLoader {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		// SwingUtilities.updateComponentTreeUI(mainframe);
 
 		loadSettings();
-		
-		
-
 	}
 
 	public static void saveDefault() {
@@ -54,7 +50,7 @@ public class FileLoader {
 			fos = new FileOutputStream(configF);
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(new ConfigObj(new int[] { 1, 39, 1, 37, 1, 38, 1, 77, 1, 40, 1, 34 }, MainClass.port,
-					MainClass.ip, new File(""), false, false, 50, Utils.GetfilledArrey(20, 32), new boolean[32]
+					MainClass.ip, new File(""), false, false, 50, Utils.GetfilledArray(20, 32), new boolean[32]
 			));
 
 			oos.close();
@@ -79,7 +75,6 @@ public class FileLoader {
 				fos = new FileInputStream(configF);
 				ObjectInputStream ois = new ObjectInputStream(fos);
 
-				// Wtf
 				CurrentSettings = (ConfigObj) ois.readObject();
 
 				System.out.println(CurrentSettings.save[11]);
@@ -90,9 +85,7 @@ public class FileLoader {
 				MainClass.port = CurrentSettings.port;
 
 				MainClass.lastpth = CurrentSettings.path;
-
 				Settings.keys = CurrentSettings.save;
-
 				Settings.isShaking = CurrentSettings.Shake;
 				Settings.isRamdOld = CurrentSettings.oldRmd;
 

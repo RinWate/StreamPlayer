@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 
 import ru.rinpolz.streamplayer.mainlogic.Server;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class Equalizer {
 

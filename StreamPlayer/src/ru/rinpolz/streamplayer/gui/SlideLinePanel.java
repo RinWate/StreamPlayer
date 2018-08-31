@@ -9,7 +9,7 @@ import ru.rinpolz.streamplayer.graphics.VisualWorker;
 import ru.rinpolz.streamplayer.mainlogic.Client;
 import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Server;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class SlideLinePanel extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -26,13 +26,11 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	public boolean back = false;
 
 	Color pColor = new Color(245, 155, 5, 130);
-	
 	Color dColor = new Color(255, 5, 0, 200);
-
-	int presset = -1;
-
 	Color prColor = new Color(255, 230, 5, 130);
 	Color bprColor = new Color(15, 91, 255, 150);
+	
+	int presset = -1;
 
 	float cprogress = 0;
 	int Destprogress = 0;
@@ -46,15 +44,12 @@ public class SlideLinePanel extends Canvas implements Runnable {
 		this.setIgnoreRepaint(true);
 		this.setFocusable(false);
 		this.setEnabled(false);
-
 	}
 
 	public void render() {
 
 		try {
 			Graphics g = bf.getDrawGraphics();
-			// ( ͡° ͜ʖ ͡° )
-			
 			summ = norm(summ);
 			VisualWorker.CreateParticles(summ);
 
@@ -104,14 +99,9 @@ public class SlideLinePanel extends Canvas implements Runnable {
 							g.fillRect(off, 10, 2, l + 1);
 							flag = true;
 						}
-
 					}
-
 				}
-
 			}
-
-			///////
 
 			if (summ > 600) {
 				if (!MainClass.isRemote) {
@@ -127,15 +117,12 @@ public class SlideLinePanel extends Canvas implements Runnable {
 
 			if (isPaint) {
 				if (!back) {
-
 					if (x < this.getWidth()) {
 						x++;
 					} else {
 						back = true;
 					}
-
 				} else {
-
 					if (x > g.getFontMetrics().stringWidth(line) * -1) {
 						x--;
 					} else {
@@ -152,7 +139,6 @@ public class SlideLinePanel extends Canvas implements Runnable {
 			init = false;
 			e.printStackTrace();
 		}
-
 	}
 
 	public void setPresset(int pr) {
@@ -164,13 +150,11 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	}
 
 	public void setValue(int ps) {
-
 		if (ps > 392 || ps < 0) {
 			Destprogress = 0;
 		} else {
 			Destprogress = ps;
 		}
-
 	}
 
 	public int getValue() {
@@ -182,25 +166,20 @@ public class SlideLinePanel extends Canvas implements Runnable {
 		bf = getBufferStrategy();
 		init = true;
 		repaint();
-
 	}
 
-	@Override
 	public void run() {
-
 		while (isRunning) {
 			if (init) {
 				this.isPaint = true;
 				render();
 			}
 			Utils.sleep(45);
-
 		}
 	}
 
 	public void UpdateSpec(byte[] indat) {
 		this.arr = indat;
-
 	}
 
 	public void resetAll(boolean b) {
@@ -221,7 +200,5 @@ public class SlideLinePanel extends Canvas implements Runnable {
 			return 255;
 		}
 		return i;
-
 	};
-
 }

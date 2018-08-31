@@ -18,7 +18,7 @@ import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Settings;
 import ru.rinpolz.streamplayer.mainlogic.VolumeController;
 import ru.rinpolz.streamplayer.network.ClientInputReader;
-import ru.rinpolz.streamplayer.utill.Utils;
+import ru.rinpolz.streamplayer.util.Utils;
 
 public class GUIClient extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -79,15 +79,12 @@ public class GUIClient extends JFrame {
 		});
 
 		s_volume.addChangeListener(new ChangeListener() {
-			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				VolumeController.SetVolume(s_volume.getValue());
 			}
 		});
 
 		s_volume.addMouseWheelListener(new MouseWheelListener() {
-
-			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if (s_volume.isEnabled()) {
 					byte how = 5;
@@ -105,13 +102,11 @@ public class GUIClient extends JFrame {
 
 		this.add(b_settings);
 		
-		
 		b_settings.setBounds(1, 35, 30, 25);
 		b_settings.setIcon(MainClass.rl.getImage("gear"));
 		b_settings.addActionListener(e -> {
 			Settings.mainframe.setLocationRelativeTo(this);
 			Settings.mainframe.setVisible(true);
-			Settings.cb_debug.setEnabled(true);
 			b_settings.setEnabled(false);
 			this.setEnabled(false);
 		});
@@ -128,7 +123,6 @@ public class GUIClient extends JFrame {
 			this.setLocation(last.x + Utils.getRandom(2), Utils.getRandom(2));
 			Utils.sleep(20);
 			this.setLocation(last);
-
 		}
 	}
 }

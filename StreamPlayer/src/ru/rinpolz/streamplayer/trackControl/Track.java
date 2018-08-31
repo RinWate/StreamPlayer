@@ -1,4 +1,4 @@
-package ru.rinpolz.streamplayer.trackControll;
+package ru.rinpolz.streamplayer.trackControl;
 import java.io.File;
 
 public class Track {

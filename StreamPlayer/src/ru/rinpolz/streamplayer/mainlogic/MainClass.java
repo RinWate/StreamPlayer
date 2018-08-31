@@ -6,7 +6,7 @@ import ru.rinpolz.streamplayer.gui.GUILogin;
 import ru.rinpolz.streamplayer.hotkeys.JKeyType;
 import ru.rinpolz.streamplayer.resources.ResourceLoader;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
-import ru.rinpolz.streamplayer.utill.TrashGrabber;
+import ru.rinpolz.streamplayer.util.TrashGrabber;
 
 public class MainClass {
 	public static String ip = "";
@@ -29,7 +29,6 @@ public class MainClass {
 		System.setProperty("sun.java2d.opengl", "true");
 
 		TrashGrabber PooPgrab = new TrashGrabber();
-		PooPgrab.start();
 		System.out.println(lastpth);
 
 		Settings.setSettings();
