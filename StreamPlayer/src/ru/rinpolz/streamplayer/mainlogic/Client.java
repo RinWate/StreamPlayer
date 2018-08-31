@@ -20,7 +20,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.swing.JOptionPane;
 
-import ru.rinpolz.streamplayer.gui.Debug;
 import ru.rinpolz.streamplayer.gui.GUIClient;
 import ru.rinpolz.streamplayer.network.ClientInputReader;
 import ru.rinpolz.streamplayer.network.NetCodes;
@@ -141,10 +140,7 @@ public class Client extends Thread {
 					while (!isError) {
 						try {
 
-							Debug.l_debug.setText("<html> IP/Port: " + MainClass.ip + ":" + MainClass.port + " Readed: "
-									+ readed + " Accepted: " + acceped + " Resets: " + resets + " Skipped: " + skipped
-									+ "</html>");
-
+						
 							skipped = acceped - readed;
 
 							PacketTrack i = input.getData();

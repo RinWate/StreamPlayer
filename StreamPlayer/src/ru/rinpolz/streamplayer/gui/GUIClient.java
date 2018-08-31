@@ -23,11 +23,9 @@ import ru.rinpolz.streamplayer.utill.Utils;
 public class GUIClient extends JFrame {
 	private static final long serialVersionUID = 1L;
 
-	
-	
 	public JButton b_replay = new JButton(MainClass.rl.getImage("replay"));
 	public JButton b_skip = new JButton(MainClass.rl.getImage("next"));
-	
+
 	public JButton b_settings = new JButton();
 	public JButton b_mute = new JButton(MainClass.rl.getImage("unmute"));
 	public JLabel l_online = new JLabel("Online: ");
@@ -55,31 +53,21 @@ public class GUIClient extends JFrame {
 		l_status.setFont(Utils.STANDART_FONT);
 		l_status.setHorizontalAlignment(JLabel.RIGHT);
 
-		
-		
 		this.add(b_mute);
 		b_mute.setBounds(61, 35, 30, 25);
 
-		
-		
-		
 		this.add(b_replay);
 		b_replay.setBounds(1, 35, 30, 25);
 		b_replay.addActionListener(e -> {
 			ClientInputReader.command = NetCodes.TS_REPLAY;
 		});
-		
-		
+
 		this.add(b_skip);
 		b_skip.setBounds(31, 35, 30, 25);
 		b_skip.addActionListener(e -> {
 			ClientInputReader.command = NetCodes.TS_SKIP;
 		});
-		
-		
-		
-		
-		
+
 		this.add(l_online);
 		l_online.setBounds(3, -3, 150, 20);
 		l_online.setFont(Utils.STANDART_FONT);
@@ -124,14 +112,12 @@ public class GUIClient extends JFrame {
 		});
 
 		this.add(b_settings);
-		
-		
+
 		b_settings.setBounds(363, 35, 30, 25);
 		b_settings.setIcon(MainClass.rl.getImage("gear"));
 		b_settings.addActionListener(e -> {
 			Settings.mainframe.setLocationRelativeTo(this);
 			Settings.mainframe.setVisible(true);
-			Settings.cb_debug.setEnabled(true);
 			b_settings.setEnabled(false);
 			this.setEnabled(false);
 		});
@@ -142,16 +128,14 @@ public class GUIClient extends JFrame {
 		this.createBufferStrategy(2);
 	}
 
-	
-//	public void ShakeOff() {
-//		if (!Client.isPaised && Settings.isShaking) {
-//			Point last = this.getLocation();
-//			this.setLocation(last.x + Utils.getRandom(2), Utils.getRandom(2));
-//			Utils.sleep(20);
-//			this.setLocation(last);
-//
-//		}
-//	}
-
+	// public void ShakeOff() {
+	// if (!Client.isPaised && Settings.isShaking) {
+	// Point last = this.getLocation();
+	// this.setLocation(last.x + Utils.getRandom(2), Utils.getRandom(2));
+	// Utils.sleep(20);
+	// this.setLocation(last);
+	//
+	// }
+	// }
 
 }
