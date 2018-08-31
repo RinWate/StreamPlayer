@@ -12,7 +12,7 @@ public class ClientInputReader extends Thread {
 
 	final int SIZE = 8192;
 	//// TODO REWORCK
-	public static boolean hasSkip = false;
+	public static byte command = -1;
 
 	int buff = 0;
 	ArrayList<PacketTrack> InputBuffer = new ArrayList<>();
@@ -54,12 +54,12 @@ public class ClientInputReader extends Thread {
 					buf.clear();
 				}
 
-				if (hasSkip) {
-					hasSkip = false;
-					some.put((byte) 10);
+				if (command != -1) {
+					some.put(command);
 					some.flip();
 					channel.write(some);
 					some.rewind();
+					command = -1;
 
 				}
 			}

@@ -16,6 +16,7 @@ import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Server;
 import ru.rinpolz.streamplayer.mainlogic.Settings;
 import ru.rinpolz.streamplayer.network.ClientInputReader;
+import ru.rinpolz.streamplayer.network.NetCodes;
 
 public class JKeyType implements HotkeyListener {
 
@@ -100,7 +101,7 @@ public class JKeyType implements HotkeyListener {
 				Server.gui.sl_currentSong.resetAll(false);
 				Server.isSkip = true;
 			} else {
-				ClientInputReader.hasSkip = true;
+				ClientInputReader.command = NetCodes.TS_SKIP;
 			}
 
 			break;
@@ -136,9 +137,14 @@ public class JKeyType implements HotkeyListener {
 			break;
 
 		case 5:
-			Server.gui.sl_currentSong.resetAll(false);
-			Server.isReplaed = true;
-			Server.isSkip = true;
+
+			if (MainClass.isRemote) {
+				Server.gui.sl_currentSong.resetAll(false);
+				Server.isReplaed = true;
+				Server.isSkip = true;
+			} else {
+				ClientInputReader.command = NetCodes.TS_REPLAY;
+			}
 
 			break;
 

@@ -12,7 +12,9 @@ public class ConfigObj implements Serializable {
 	public int[] save;
 	public int port;
 	public int volume;
-	public boolean Shake;
+
+	// public boolean Shake;
+
 	public boolean oldRmd;
 	public String ip;
 	public File path;
@@ -20,8 +22,7 @@ public class ConfigObj implements Serializable {
 	public boolean[] chekcboxes;
 	public int[] sliders;
 
-	public ConfigObj(int[] array, int p, String i, File pat, boolean sha, boolean oldr, int vol, int[] sliders,
-			boolean[] cbx
+	public ConfigObj(int[] array, int p, String i, File pat, boolean oldr, int vol, int[] sliders, boolean[] cbx
 
 	) {
 
@@ -30,7 +31,7 @@ public class ConfigObj implements Serializable {
 		this.oldRmd = oldr;
 		this.save = array;
 
-		this.Shake = sha;
+		// this.Shake = sha;
 		this.ip = i;
 		this.path = pat;
 		this.port = p;

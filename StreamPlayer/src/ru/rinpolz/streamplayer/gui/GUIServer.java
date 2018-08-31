@@ -3,7 +3,6 @@ package ru.rinpolz.streamplayer.gui;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -88,7 +87,7 @@ public class GUIServer extends JFrame {
 		this.setIconImage(MainClass.rl.icon);
 		this.getContentPane().setBackground(Color.lightGray);
 		this.setTitle(name);
-		this.setSize(400, 305);
+		this.setSize(400, 306);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(null);
@@ -128,6 +127,7 @@ public class GUIServer extends JFrame {
 		list_music.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.add(sp_list);
 		sp_list.setBounds(2, 61, 286, 187);
+		
 		// >
 		list_music.addListSelectionListener(e -> {
 			updateDeleteButtonState();
@@ -443,12 +443,12 @@ public class GUIServer extends JFrame {
 		}
 	}
 
-	public void ShakeOff() {
-		if (!Server.isPaused && !Server.isSkip && Settings.isShaking) {
-			Point last = this.getLocation();
-			this.setLocation(last.x + Utils.getRandom(2), last.y + Utils.getRandom(2));
-			Utils.sleep(20);
-			this.setLocation(last);
-		}
-	}
+//	public void ShakeOff() {
+//		if (!Server.isPaused && !Server.isSkip && Settings.isShaking) {
+//			Point last = this.getLocation();
+//			this.setLocation(last.x + Utils.getRandom(2), last.y + Utils.getRandom(2));
+//			Utils.sleep(20);
+//			this.setLocation(last);
+//		}
+//	}
 }

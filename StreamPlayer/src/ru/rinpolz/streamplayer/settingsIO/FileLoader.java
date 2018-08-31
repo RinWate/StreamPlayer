@@ -54,7 +54,7 @@ public class FileLoader {
 			fos = new FileOutputStream(configF);
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(new ConfigObj(new int[] { 1, 39, 1, 37, 1, 38, 1, 77, 1, 40, 1, 34 }, MainClass.port,
-					MainClass.ip, new File(""), false, false, 50, Utils.GetfilledArrey(20, 32), new boolean[32]
+					MainClass.ip, new File(""), false, 50, Utils.GetfilledArrey(20, 32), new boolean[32]
 			));
 
 			oos.close();
@@ -93,7 +93,9 @@ public class FileLoader {
 
 				Settings.keys = CurrentSettings.save;
 
-				Settings.isShaking = CurrentSettings.Shake;
+				//Settings.isShaking = CurrentSettings.Shake;
+				
+				
 				Settings.isRamdOld = CurrentSettings.oldRmd;
 
 				VolumeController.volume_bar = CurrentSettings.volume;
@@ -117,8 +119,7 @@ public class FileLoader {
 	public static void saveSettings() {
 
 		// 11
-		ConfigObj seving = new ConfigObj(Settings.keys, MainClass.port, MainClass.ip, MainClass.lastpth,
-				Settings.isShaking, Settings.isRamdOld, VolumeController.volume_bar, Equalizer.GetSliderPos(),
+		ConfigObj seving = new ConfigObj(Settings.keys, MainClass.port, MainClass.ip, MainClass.lastpth, Settings.isRamdOld, VolumeController.volume_bar, Equalizer.GetSliderPos(),
 				Equalizer.GetCheckboxes());
 
 		ObjectOutputStream oos;

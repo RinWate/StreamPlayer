@@ -1,7 +1,6 @@
 package ru.rinpolz.streamplayer.gui;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
@@ -18,12 +17,15 @@ import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Settings;
 import ru.rinpolz.streamplayer.mainlogic.VolumeController;
 import ru.rinpolz.streamplayer.network.ClientInputReader;
+import ru.rinpolz.streamplayer.network.NetCodes;
 import ru.rinpolz.streamplayer.utill.Utils;
 
 public class GUIClient extends JFrame {
 	private static final long serialVersionUID = 1L;
 
+	public JButton b_replay = new JButton(MainClass.rl.getImage("replay"));
 	public JButton b_skip = new JButton(MainClass.rl.getImage("next"));
+
 	public JButton b_settings = new JButton();
 	public JButton b_mute = new JButton(MainClass.rl.getImage("unmute"));
 	public JLabel l_online = new JLabel("Online: ");
@@ -54,10 +56,16 @@ public class GUIClient extends JFrame {
 		this.add(b_mute);
 		b_mute.setBounds(61, 35, 30, 25);
 
+		this.add(b_replay);
+		b_replay.setBounds(1, 35, 30, 25);
+		b_replay.addActionListener(e -> {
+			ClientInputReader.command = NetCodes.TS_REPLAY;
+		});
+
 		this.add(b_skip);
 		b_skip.setBounds(31, 35, 30, 25);
 		b_skip.addActionListener(e -> {
-			ClientInputReader.hasSkip = true;
+			ClientInputReader.command = NetCodes.TS_SKIP;
 		});
 
 		this.add(l_online);
@@ -104,14 +112,12 @@ public class GUIClient extends JFrame {
 		});
 
 		this.add(b_settings);
-		
-		
-		b_settings.setBounds(1, 35, 30, 25);
+
+		b_settings.setBounds(363, 35, 30, 25);
 		b_settings.setIcon(MainClass.rl.getImage("gear"));
 		b_settings.addActionListener(e -> {
 			Settings.mainframe.setLocationRelativeTo(this);
 			Settings.mainframe.setVisible(true);
-			Settings.cb_debug.setEnabled(true);
 			b_settings.setEnabled(false);
 			this.setEnabled(false);
 		});
@@ -122,13 +128,14 @@ public class GUIClient extends JFrame {
 		this.createBufferStrategy(2);
 	}
 
-	public void ShakeOff() {
-		if (!Client.isPaised && Settings.isShaking) {
-			Point last = this.getLocation();
-			this.setLocation(last.x + Utils.getRandom(2), Utils.getRandom(2));
-			Utils.sleep(20);
-			this.setLocation(last);
+	// public void ShakeOff() {
+	// if (!Client.isPaised && Settings.isShaking) {
+	// Point last = this.getLocation();
+	// this.setLocation(last.x + Utils.getRandom(2), Utils.getRandom(2));
+	// Utils.sleep(20);
+	// this.setLocation(last);
+	//
+	// }
+	// }
 
-		}
-	}
 }

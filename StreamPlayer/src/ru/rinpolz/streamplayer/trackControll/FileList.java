@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -41,7 +40,10 @@ public class FileList {
 	public FileList() {
 
 		fr.setSize(500, 500);
-		fr.setIconImage(new ImageIcon(getClass().getResource("open.png")).getImage());
+		
+		fr.setIconImage(MainClass.rl.open_icon);
+		
+		
 		fr.setResizable(false);
 		fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fr.setLocationRelativeTo(Server.gui);

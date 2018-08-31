@@ -11,7 +11,8 @@ public class ResourceLoader {
 	public final Image login_icon = new ImageIcon(getClass().getResource("login_icon.png")).getImage();
 	public final Image icon = new ImageIcon(getClass().getResource("icon.png")).getImage();
 	public final Image setting_icon = new ImageIcon(getClass().getResource("settings_icon.png")).getImage();
-
+	public final Image open_icon = new ImageIcon(getClass().getResource("open_icon.png")).getImage();
+	
 	private HashMap<String, ImageIcon> ButtonImages = new HashMap<>();
 
 	public ResourceLoader() {

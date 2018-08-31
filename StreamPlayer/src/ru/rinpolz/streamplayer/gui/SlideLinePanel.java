@@ -5,13 +5,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
-import ru.rinpolz.streamplayer.mainlogic.Client;
-import ru.rinpolz.streamplayer.mainlogic.MainClass;
-import ru.rinpolz.streamplayer.mainlogic.Server;
 import ru.rinpolz.streamplayer.utill.Utils;
 
 public class SlideLinePanel extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
+
 	private Color backColor;
 	static BufferStrategy bfs;
 	private Graphics g;
@@ -24,15 +22,18 @@ public class SlideLinePanel extends Canvas implements Runnable {
 
 	private boolean back = false;
 
-	private float cprogress = 0;
+	private double cprogress = 0;
 	private int Destprogress = 0;
 
-	private float curPresset = 0;
+	private double curPresset = 0;
 	private int presset = -1;
 
 	private int x = 0;
 	private int summ = 0;
 	private int arreyOffset = 0;
+
+	private double curTextY = 0;
+	private int destTextY = 0;
 
 	private int stringWidth = 0;
 	private boolean updateStingSize = true;
@@ -50,10 +51,11 @@ public class SlideLinePanel extends Canvas implements Runnable {
 		try {
 
 			g = bfs.getDrawGraphics();
-
 			g.setFont(Utils.SLIDER_FONT);
+
 			if (updateStingSize) {
 				stringWidth = g.getFontMetrics().stringWidth(line);
+				destTextY = Utils.SLIDER_FONT.getSize();
 				updateStingSize = false;
 			}
 
@@ -62,8 +64,6 @@ public class SlideLinePanel extends Canvas implements Runnable {
 			g.setColor(backColor);
 
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-			cprogress = (float) Utils.lerp(cprogress, Destprogress, 0.05);
 
 			g.setColor(Utils.PROGRESS_COLOR);
 			g.fillRect(0, 3, (int) cprogress, 14);
@@ -102,7 +102,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 				}
 
 				if (presset > -1 && this.isEnabled()) {
-					curPresset = (float) Utils.lerp(curPresset, presset, 0.4);
+
 					g.setColor(Utils.PRESET_COLOR);
 					g.fillRect((int) cprogress, 5, (int) (curPresset - cprogress), 10);
 				}
@@ -112,16 +112,16 @@ public class SlideLinePanel extends Canvas implements Runnable {
 
 			///////
 
-			if (summ > 600) {
-				if (!MainClass.isRemote) {
-					Client.gui.ShakeOff();
-				} else {
-					Server.gui.ShakeOff();
-				}
-			}
+			// if (summ > 600) {
+			// if (!MainClass.isRemote) {
+			// Client.gui.ShakeOff();
+			// } else {
+			// Server.gui.ShakeOff();
+			// }
+			// }
 
 			g.setColor(Color.white);
-			g.drawString(line, (int) x, Utils.SLIDER_FONT.getSize());
+			g.drawString(line, x, (int) curTextY);
 
 			if (isPaint) {
 
@@ -159,6 +159,10 @@ public class SlideLinePanel extends Canvas implements Runnable {
 				}
 				isPaint = false;
 			}
+
+			cprogress = Utils.lerp(cprogress, Destprogress, 0.05);
+			curTextY = Math.abs(destTextY - curTextY) < 0.5 ?  destTextY : Utils.lerp(curTextY, destTextY, 0.2);
+			curPresset = Utils.lerp(curPresset, presset, 0.4);
 
 			bfs.show();
 			g.dispose();
@@ -238,7 +242,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 				this.isPaint = true;
 				render();
 			}
-			Utils.sleep(42);
+			Utils.sleep(45);
 
 		}
 	}
@@ -246,6 +250,9 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	public void resetAll(boolean b) {
 		if (b) {
 			x = 0;
+
+			curTextY = Utils.random.nextBoolean() ? -60 : 60;
+
 			back = false;
 		}
 		samples = new byte[404];
