@@ -2,7 +2,7 @@ package ru.rinpolz.streamplayer.network;
 
 public class StatUsParser {
 
-	String[] strings;
+	public String[] strings;
 
 	public void Parse(String s) {
 		strings = null;

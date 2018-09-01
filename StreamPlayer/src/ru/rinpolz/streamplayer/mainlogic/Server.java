@@ -87,7 +87,7 @@ public class Server extends Thread {
 		this.setPriority(MAX_PRIORITY);
 		this.setName("Server-Main");
 
-		MainClass.isRemote = true;
+		MainClass.isServer = true;
 		MainClass.login.setVisible(false);
 		playlist = new FileList();
 		gui.sl_currentSong.setRunning(true);
@@ -149,7 +149,7 @@ public class Server extends Thread {
 
 		title = f.getName();
 		gui.l_status.setText(status);
-		gui.sl_currentSong.setName(f.getName());
+		gui.sl_currentSong.setString(f.getName());
 		gui.sl_currentSong.resetAll(true);
 
 		try {
