@@ -35,7 +35,6 @@ public class Server extends Thread {
 	VolumeController controll = new VolumeController(true);
 
 	ByteBuffer sendbuffer = ByteBuffer.allocate(SIZE);
-
 	ByteBuffer inputCommandBuffer = ByteBuffer.allocate(1);
 
 	public static int lastvolume = 0;
@@ -51,7 +50,7 @@ public class Server extends Thread {
 
 	public static byte SERVER__STATUS = 0;
 
-	public static volatile ClientConnection currentConnwct;
+	public static ClientConnection currentConnwct;
 	public static boolean isSended = true;
 
 	/////// TrackControll
@@ -87,7 +86,7 @@ public class Server extends Thread {
 		this.setPriority(MAX_PRIORITY);
 		this.setName("Server-Main");
 
-		MainClass.isServer = true;
+		MainClass.isRemote = true;
 		MainClass.login.setVisible(false);
 		playlist = new FileList();
 		gui.sl_currentSong.setRunning(true);
@@ -149,7 +148,7 @@ public class Server extends Thread {
 
 		title = f.getName();
 		gui.l_status.setText(status);
-		gui.sl_currentSong.setString(f.getName());
+		gui.sl_currentSong.setName(f.getName());
 		gui.sl_currentSong.resetAll(true);
 
 		try {
@@ -184,7 +183,7 @@ public class Server extends Thread {
 
 			volume = (FloatControl) Output.getControl(FloatControl.Type.MASTER_GAIN);
 
-			System.out.println("Clip started");
+			SMS.say("Clip started");
 
 			trckLegit = in.available();
 			VolumeController.current_volume = -80f;
@@ -195,8 +194,8 @@ public class Server extends Thread {
 
 			while (num != -1 && !isSkip) {
 
-				gui.l_online.setText("Online: " + ClientListener.ÑlientsConnections.size()
-						+ getWord(ClientListener.ÑlientsConnections.size()));
+				gui.l_online.setText(Utils.ONLINE + ClientListener.ÑlientsConnections.size()
+						+ Utils.getWord(ClientListener.ÑlientsConnections.size()));
 
 				if (HowManySkip != 0) {
 					isPosCha = true;
@@ -233,7 +232,7 @@ public class Server extends Thread {
 					forAllClients(createPack());
 
 					gui.sl_currentSong.resetAll(false);
-					status = "Status: " + Utils.PAUSE;
+					status = Utils.STATUS + Utils.PAUSE;
 					gui.l_status.setText(status);
 
 					if (Output.isRunning()) {
@@ -256,7 +255,7 @@ public class Server extends Thread {
 					forAllClients(createPack());
 					isPosCha = false;
 
-					status = "Status: " + Utils.PLAY;
+					status = Utils.STATUS + Utils.PLAY;
 					gui.l_status.setText(status);
 
 				}
@@ -265,7 +264,6 @@ public class Server extends Thread {
 					noskipcycles--;
 				} else {
 					gui.sl_currentSong.setValue((int) Utils.map(in.available(), 0, trckLegit, 391, 0));
-
 					timeline = Utils
 							.getTime(trackSizeInmicros - Utils.map(in.available(), 0, trckLegit, 0, trackSizeInmicros))
 							+ "|" + duration;
@@ -277,7 +275,7 @@ public class Server extends Thread {
 			forAllClients(createPack());
 			timeline = duration + "|" + duration;
 			gui.sl_currentSong.resetAll(false);
-			System.out.println("Clip ended");
+			SMS.say("Clip ended");
 			Output.drain();
 			Output.stop();
 			Output.close();
@@ -285,7 +283,7 @@ public class Server extends Thread {
 			in.close();
 
 		} catch (Exception e) {
-			gui.l_status.setText("Status: ReadError");
+			gui.l_status.setText(Utils.STATUS + MainClass.lang.getLocale("error::readError"));
 			Utils.sleep(400);
 			e.printStackTrace();
 		}
@@ -306,14 +304,6 @@ public class Server extends Thread {
 			gui.s_volume.setValue(lastvolume);
 			gui.b_mute.setIcon(MainClass.rl.getImage("unmute"));
 			isMute = false;
-		}
-	}
-
-	public static String getWord(int num_of_listeners) {
-		if (num_of_listeners == 1) {
-			return " listener";
-		} else {
-			return " listeners";
 		}
 	}
 
@@ -408,7 +398,6 @@ public class Server extends Thread {
 		strigBuffer.append(timeline + "\n");
 		strigBuffer.append(Utils.VERSION);
 		return strigBuffer.toString();
-
 	}
 
 	public void proccesCommand(byte com) {
@@ -420,7 +409,6 @@ public class Server extends Thread {
 			isReplaed = true;
 			isSkip = true;
 			break;
-
 		default:
 			break;
 		}

@@ -14,12 +14,19 @@ import javax.sound.sampled.AudioSystem;
 
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
+import ru.rinpolz.streamplayer.mainlogic.MainClass;
+
 public abstract class Utils {
 
 	public static Random random = new Random();
-
-	public static final String PLAY = "Playing";
-	public static final String PAUSE = "Pause";
+	/**
+	 *  A someshit finals strings
+	 */
+	public static final String PLAY = MainClass.lang.getLocale("status::play");
+	public static final String PAUSE = MainClass.lang.getLocale("status::pause");
+	public static final String SYNC = MainClass.lang.getLocale("status:sync");
+	public static final String STATUS = MainClass.lang.getLocale("status::name");
+	public static final String ONLINE = MainClass.lang.getLocale("online::name");
 	public static final String VERSION = "1.9 PR";
 
 	public static final Font STANDART_FONT = new Font("Arial", Font.BOLD, 11);
@@ -61,8 +68,18 @@ public abstract class Utils {
 		}
 		return ret;
 	}
+	
+	public static String getWord(int num_of_listeners) {
+		if (num_of_listeners == 1) {
+			return MainClass.lang.getLocale("listeners::one");
+		} else {
+			return MainClass.lang.getLocale("listeners::many");
+		}
+	}
 
-	public byte[] adjustVolume(byte[] audioSamples, float volume) {
+	
+	@SuppressWarnings("unused")
+	private byte[] adjustVolume(byte[] audioSamples, float volume) {
 		// Big indian
 		byte[] array = new byte[audioSamples.length];
 		for (int i = 0; i < array.length; i += 2) {

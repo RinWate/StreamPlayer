@@ -32,7 +32,6 @@ public class Client extends Thread {
 	VolumeController controll = new VolumeController(false);
 
 	// Максимальный размер пакета
-
 	int nonReadebleCycles = 0;
 	int uiUpdate = 0;
 	byte retry = 0;
@@ -68,13 +67,12 @@ public class Client extends Thread {
 	Thread lineupdater = new Thread(gui.sl_currentSong);
 	StatUsParser parser = new StatUsParser();
 
-	@Override
 	public void run() {
 		lineupdater.setPriority(NORM_PRIORITY);
 		this.setPriority(MAX_PRIORITY);
 		this.setName("Client player");
 
-		MainClass.isServer = false;
+		MainClass.isRemote = false;
 		MainClass.login.setButtonStatus(false);
 		gui.sl_currentSong.setRunning(true);
 
@@ -82,12 +80,10 @@ public class Client extends Thread {
 		retry = 3;
 		while (retry <= 3) {
 			try {
-				System.out.println("Recconected");
-				gui.sl_currentSong.clearString();
-				
+				SMS.say("Reconnected");
 				isConnected = false;
 				sc = SocketChannel.open();
-				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 1000);
+				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 3000);
 
 				isConnected = true;
 
@@ -103,14 +99,13 @@ public class Client extends Thread {
 
 					MainClass.login.dispose();
 					gui.s_volume.setValue(FileLoader.CurrentSettings.volume);
-
 				}
 
 				input = new ClientInputReader(sc);
 
 				while (!isError) {
 					PacketTrack startPack = null;
-					gui.l_status.setText("Status: Synchronization");
+					gui.l_status.setText(Utils.STATUS + Utils.SYNC);
 
 					// TODO loop !infinity! may lagged
 					while (startPack == null) {
@@ -118,10 +113,10 @@ public class Client extends Thread {
 						Utils.sleep(17);
 					}
 
-					parser.Parse(startPack.stringData);
+					parser.parse(startPack.stringData);
 					samplerate = startPack.samplerate;
 					gui.sl_currentSong.resetAll(true);
-					gui.sl_currentSong.setString(parser.getTite());
+					gui.sl_currentSong.setName(parser.getTitle());
 					matchVersion(parser.getVersion());
 					retry = 0;
 
@@ -140,16 +135,10 @@ public class Client extends Thread {
 
 					while (!isError) {
 						try {
-
 							skipped = acceped - readed;
-
 							PacketTrack i = input.getData();
-
 							if (i != null) {
-
-								parser.Parse(i.stringData);
-
-								System.out.println("ЭТОГО БЫТЬ НЕДОЛЖНО");
+								parser.parse(i.stringData);
 
 								nonReadebleCycles = 0;
 								isPaised = i.netCode == NetCodes.PAUSED;
@@ -159,22 +148,16 @@ public class Client extends Thread {
 
 								uiUpdate++;
 
-								/// ТУТ КЭКК
 								if (i.netCode == NetCodes.ENDED) {
 									Client.gui.sl_currentSong.resetAll(false);
 									break;
 								}
 
-								// Если трек проигрывается
-
-								// TODO ТУТ
 								if (i.netCode != NetCodes.PAUSED && i.leg != -1) {
 									clipSDL.start();
 									clipSDL.write(i.data, 0, i.leg);
 									gui.sl_currentSong.UpdateSpec(i.data);
-
 								} else {
-
 									VolumeController.current_volume = -80;
 									gui.sl_currentSong.resetAll(false);
 									clipSDL.drain();
@@ -182,31 +165,28 @@ public class Client extends Thread {
 								}
 
 								if (uiUpdate >= 25) {
-									gui.l_online.setText("Online: " + i.num_of_clients + getWord(i.num_of_clients));
-									gui.sl_currentSong.setString(parser.getTite());
-									uiUpdate = 0;
+									gui.l_online.setText(Utils.ONLINE + i.num_of_clients + Utils.getWord(i.num_of_clients));
+									gui.sl_currentSong.setName(parser.getTitle());
 
+									uiUpdate = 0;
 								}
 								readed++;
 							} else {
 								nonReadebleCycles++;
-
 								Utils.sleep(20);
-								if (nonReadebleCycles > 10) {
+								if (nonReadebleCycles > 5) {
 									gui.sl_currentSong.resetAll(false);
 								}
 
 								if (nonReadebleCycles > 100) {
-
-									gui.sl_currentSong.clearString();
 									gui.l_status.setText("No data available...");
+									// gui.pr_bar.setIndeterminate(true);
 
 								}
 								if (nonReadebleCycles > 400) {
-
+									gui.sl_currentSong.resetAll(true);
 									throw new TimeoutException();
 								}
-
 							}
 
 						} catch (Exception e) {
@@ -214,12 +194,10 @@ public class Client extends Thread {
 							isError = true;
 
 						}
-
 					}
 
 					gui.sl_currentSong.setValue(0);
 					clipSDL.close();
-
 				}
 
 			} catch (UnknownHostException e) {
@@ -238,25 +216,20 @@ public class Client extends Thread {
 				e.printStackTrace();
 			} finally {
 				if (retry >= 3) {
-
 					if (input != null) {
 						input.stopThead();
 					}
-
-					// gui.pr_bar.setIndeterminate(false);
-
 					ShowErrorMessage(errorid);
 				}
-
-				gui.l_online.setText("Online: No info");
+				
+				gui.l_online.setText(MainClass.lang.getLocale("online::name") + MainClass.lang.getLocale("online::no_info"));
 				gui.l_status.setText(retry + 1 + "/3 Try to connect");
-				retry++;
-
+				retry++; 
 			}
 		}
 
 		isError = true;
-		gui.l_status.setText("Status: error...");
+		gui.l_status.setText(Utils.STATUS + MainClass.lang.getLocale("error::name"));
 		gui.sl_currentSong.setRunning(false);
 		gui.dispose();
 		MainClass.login.setVisible(true);
@@ -267,9 +240,8 @@ public class Client extends Thread {
 		if (!version.equalsIgnoreCase(Utils.VERSION)) {
 			JOptionPane.showMessageDialog(gui,
 					"WARNING: Your client version does not match the server's. \nIt cause some stability problems or crashes "
-							+ "\nClient Version: " + Utils.VERSION + "\nServer Version: " + version
-							+ "\nPlease, update program: http://vk.com",
-					"Version Checker", JOptionPane.INFORMATION_MESSAGE);
+							+ "\nClient Version: " + Utils.VERSION + "\nServer Version: " + version,
+					"Version Checker", JOptionPane.WARNING_MESSAGE);
 			gui.setTitle("StreamPlayer Client (OLD)");
 
 		}
@@ -282,14 +254,6 @@ public class Client extends Thread {
 		ObjectInput in = new ObjectInputStream(bis);
 		return in.readObject();
 
-	}
-
-	public String getWord(int num) {
-		if (num == 1) {
-			return " listener";
-		} else {
-			return " listeners";
-		}
 	}
 
 	public void ShowErrorMessage(int id) {

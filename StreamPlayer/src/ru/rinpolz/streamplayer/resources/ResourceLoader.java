@@ -31,7 +31,8 @@ public class ResourceLoader {
 		RegRes("folder.png");
 		RegRes("open.png");
 		RegRes("goto.png");
-
+		RegRes("ru.png");
+		RegRes("en.png");
 	}
 
 	public ImageIcon getImage(String name) {
@@ -40,7 +41,6 @@ public class ResourceLoader {
 
 	private void RegRes(String filename) {
 		try {
-
 			ButtonImages.put(filename.substring(0, filename.length() - 4),
 					new ImageIcon(getClass().getResource(filename)));
 		} catch (Exception e) {

@@ -2,9 +2,9 @@ package ru.rinpolz.streamplayer.network;
 
 public class StatUsParser {
 
-	public String[] strings;
+	String[] strings;
 
-	public void Parse(String s) {
+	public void parse(String s) {
 		strings = null;
 		try {
 			strings = s.split("\n");
@@ -24,7 +24,7 @@ public class StatUsParser {
 
 	}
 
-	public String getTite() {
+	public String getTitle() {
 		return get(0);
 	}
 

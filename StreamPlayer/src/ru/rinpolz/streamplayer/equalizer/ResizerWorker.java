@@ -70,7 +70,7 @@ public class ResizerWorker extends Thread {
 
 	public void redirectSet() {
 
-		if (MainClass.isServer) {
+		if (MainClass.isRemote) {
 			Server.gui.b_equal.setEnabled(true);
 		} else {
 			// Client.gui.b_equal.setEnabled(true);
@@ -80,7 +80,7 @@ public class ResizerWorker extends Thread {
 
 	public void redirectName(String text) {
 
-		if (MainClass.isServer) {
+		if (MainClass.isRemote) {
 			Server.gui.b_equal.setText(text);
 		} else {
 			// Client.gui.b_equal.setText(text);
@@ -90,7 +90,7 @@ public class ResizerWorker extends Thread {
 
 	public void redirectsetvisabtlity(boolean b) {
 
-		if (MainClass.isServer) {
+		if (MainClass.isRemote) {
 			Server.gui.equalizer.setVisabilyty(b);
 		} else {
 			// Client.gui.equalizer.setVisabilyty(b);

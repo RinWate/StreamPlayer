@@ -1,55 +1,53 @@
 package ru.rinpolz.streamplayer.hotkeys;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import ru.rinpolz.streamplayer.listeners.SKeyListener;
 import ru.rinpolz.streamplayer.mainlogic.MainClass;
 import ru.rinpolz.streamplayer.mainlogic.Settings;
 
 public class KeyChooser {
 
+	static boolean selected = false;
+
 	public KeyChooser(int hotkeyid) {
-		JDialog frame = new JDialog();
+		JFrame frame = new JFrame("->");
 		JLabel label = new JLabel("Press some key...", SwingConstants.CENTER);
 
-		frame.setUndecorated(true);
 		frame.setSize(180, 85);
 		frame.setResizable(false);
-		frame.getContentPane().setBackground(Color.lightGray);
-		frame.setLocationRelativeTo(Settings.mainframe);
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.add(label);
 		frame.setAlwaysOnTop(true);
 		frame.setVisible(true);
 
-		frame.addKeyListener(new SKeyListener() {
+		frame.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-
+				selected = true;
 				Settings.isOpened = false;
-
-				System.out.println(KeyEvent.getKeyText(e.getKeyCode()));
-
 				Settings.keys[hotkeyid] = e.getKeyCode();
-
 				MainClass.keyListener.initKeys();
 
 				frame.removeKeyListener(this);
-
-				Settings.setSettings();
-				Settings.mainframe.setAlwaysOnTop(true);
-				Settings.mainframe.setAlwaysOnTop(false);
-				Settings.mainframe.setEnabled(true);
-
 				frame.dispose();
 
+				Settings.setSettings();
+				
 			}
 		});
 	}

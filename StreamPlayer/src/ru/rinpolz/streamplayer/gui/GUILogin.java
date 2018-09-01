@@ -19,17 +19,17 @@ import ru.rinpolz.streamplayer.utill.Utils;
 public class GUILogin extends JFrame {
 	private static final long serialVersionUID = 5676639024889958052L;
 
-	static JButton connect = new JButton("Connect");
-	static JButton makehost = new JButton("Start Host");
+	static JButton connect = new JButton(MainClass.lang.getLocale("connect::name"));
+	static JButton makehost = new JButton(MainClass.lang.getLocale("makehost::name"));
 
 	static JTextField port = new JTextField();
 	static JTextField ip = new JTextField();
 
-	public JLabel l_port = new JLabel("Port:");
-	public JLabel l_ip = new JLabel("IP:");
-	public JLabel welcome = new JLabel("Welcome to revolution music stream system OPG-9000");
+	public JLabel l_port = new JLabel(MainClass.lang.getLocale("port::name"));
+	public JLabel l_ip = new JLabel(MainClass.lang.getLocale("ip::name"));
+	public JLabel welcome = new JLabel(MainClass.lang.getLocale("welcome::name"));
 
-	public JLabel version = new JLabel("Version: " + Utils.VERSION);
+	public JLabel version = new JLabel(MainClass.lang.getLocale("version::name") + Utils.VERSION);
 	public JLabel status = new JLabel();
 	public JLabel check = new JLabel();
 
@@ -51,7 +51,7 @@ public class GUILogin extends JFrame {
 		this.add(welcome);
 		welcome.setBounds(8, 0, 300, 25);
 		welcome.setFont(Utils.LABEL_FONT);
-		welcome.setToolTipText("I do not know why this is written here and what it means");
+		welcome.setToolTipText(MainClass.lang.getLocale("welcome::tooltip"));
 
 		this.add(check);
 		check.setBounds(25, 25, 100, 25);
@@ -72,14 +72,13 @@ public class GUILogin extends JFrame {
 
 		this.add(b_news);
 		b_news.setBounds(255, 98, 40, 20);
-		// >
 		b_news.addActionListener(e -> {
 			JOptionPane.showMessageDialog(this,
 					"Changelog on 1.9: " + 
 					"\n-Удален лишний код, упрощена логика интерфейса" + 
 					"\n-Продолжается работа над интерфейсом программы" + 
 					"\n-Добавлено меню с метадатой файла"
-					, "News?", JOptionPane.INFORMATION_MESSAGE);
+					, MainClass.lang.getLocale("news::name"), JOptionPane.INFORMATION_MESSAGE);
 		});
 
 		this.add(port);
@@ -89,7 +88,6 @@ public class GUILogin extends JFrame {
 		this.add(ip);
 		ip.setBounds(60, 25, 100, 22);
 		ip.addKeyListener(new SKeyListener() {
-			@Override
 			public void keyTyped(KeyEvent e) {
 				if (ip.getText().length() >= 100) {
 					e.consume();
@@ -155,7 +153,6 @@ public class GUILogin extends JFrame {
 	}
 
 	public boolean checkCorrect() {
-
 		try {
 			if (Integer.parseInt(port.getText()) > 65535) {
 				throw new Exception();

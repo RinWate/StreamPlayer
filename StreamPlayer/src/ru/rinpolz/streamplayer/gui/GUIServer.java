@@ -32,6 +32,7 @@ import ru.rinpolz.streamplayer.listeners.SKeyListener;
 import ru.rinpolz.streamplayer.listeners.SMouseListener;
 import ru.rinpolz.streamplayer.listeners.SMouseMotionListener;
 import ru.rinpolz.streamplayer.mainlogic.MainClass;
+import ru.rinpolz.streamplayer.mainlogic.SMS;
 import ru.rinpolz.streamplayer.mainlogic.Server;
 import ru.rinpolz.streamplayer.mainlogic.Settings;
 import ru.rinpolz.streamplayer.mainlogic.VolumeController;
@@ -57,33 +58,30 @@ public class GUIServer extends JFrame {
 	public JButton b_play = new JButton(MainClass.rl.getImage("pause"));
 	public JButton b_next = new JButton(MainClass.rl.getImage("next"));
 	public JButton b_mute = new JButton(MainClass.rl.getImage("unmute"));
-
-	public JSlider s_volume = new JSlider();
-
 	public JButton b_replay = new JButton();
 	public JButton b_delete = new JButton(MainClass.rl.getImage("delete"));
 	public JButton b_settings = new JButton(MainClass.rl.getImage("gear"));
 	public JButton b_openfolder = new JButton(MainClass.rl.getImage("open"));
 	public JButton b_set = new JButton(MainClass.rl.getImage("folder"));
 	public JButton b_reload = new JButton(MainClass.rl.getImage("reload"));
-
 	public JButton b_goto = new JButton(MainClass.rl.getImage("goto"));
+	public JButton b_equal = new JButton(MainClass.rl.getImage("equ"));
+	public JButton b_metadata = new JButton(MainClass.lang.getLocale("metadata::name"));
 
-	public JLabel l_online = new JLabel("Online: ");
-	public JLabel l_status = new JLabel("Status: ");
+	public JSlider s_volume = new JSlider();
+
+	public JLabel l_online = new JLabel(MainClass.lang.getLocale("online::name"));
+	public JLabel l_status = new JLabel(MainClass.lang.getLocale("status::name"));
 	public JLabel l_trackcount = new JLabel(">?<");
 
 	public JLabel l_timer = new JLabel("00:00|00:00", SwingConstants.CENTER);
 
-	public JButton b_equal = new JButton(MainClass.rl.getImage("equ"));
-
-	public JButton b_metadata = new JButton("Metadata");
 	public Equalizer equalizer = new Equalizer(this, 300);
 	public JTextField tf_search = new JTextField();
 	public JLabel l_timing = new JLabel("--:--");
 
 	public GUIServer(String name) {
-		System.out.println("Init Server GUI...");
+		SMS.say("Init Server GUI...");
 		this.setIconImage(MainClass.rl.icon);
 		this.getContentPane().setBackground(Color.lightGray);
 		this.setTitle(name);
@@ -119,8 +117,6 @@ public class GUIServer extends JFrame {
 		l_online.setBounds(3, -3, 150, 20);
 		l_online.setFont(Utils.STANDART_FONT);
 
-		/////////////////////////////////////////
-
 		/// //////////////////////////////////// List music
 		list_music.setLayoutOrientation(JList.VERTICAL);
 		list_music.setFont(Utils.STANDART_FONT);
@@ -139,15 +135,12 @@ public class GUIServer extends JFrame {
 					sl_currentSong.resetAll(false);
 					Server.isSet = true;
 					Server.isSkip = true;
-
 				}
 			}
 		});
-		//// >
+		
 		list_music.addKeyListener(new SKeyListener() {
-			@Override
 			public void keyPressed(KeyEvent arg0) {
-
 				if (arg0.getKeyCode() == 10) {
 					sl_currentSong.resetAll(false);
 					Server.isSet = true;
@@ -161,7 +154,6 @@ public class GUIServer extends JFrame {
 		});
 
 		sl_currentSong.addMouseMotionListener(new SMouseMotionListener() {
-			@Override
 			public void mouseMoved(MouseEvent e) {
 				if (e.isShiftDown()) {
 					sl_currentSong.setPresset(e.getX());
@@ -173,22 +165,18 @@ public class GUIServer extends JFrame {
 				Utils.sleep(33);
 			}
 		});
-		//// >
+		
 		sl_currentSong.addMouseListener(new SMouseListener() {
-			
-			@Override
 			public void mouseEntered(MouseEvent e) {
 				sl_currentSong.reposPresset();
 			}
 			
-			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.isShiftDown() && sl_currentSong.isEnabled()) {
 					Server.SetTrackPos(e.getX());
 				}
 			}
-
-			@Override
+			
 			public void mouseExited(MouseEvent e) {
 				l_timing.setText("--:--");
 				sl_currentSong.clearPreset();
@@ -202,7 +190,6 @@ public class GUIServer extends JFrame {
 
 		// >
 		b_delete.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!list_music.isSelectionEmpty()) {
 					File t = FileList.filelist.get(list_music.getSelectedValue()).file;
@@ -226,31 +213,25 @@ public class GUIServer extends JFrame {
 
 		b_settings.addActionListener(e -> {
 			Settings.mainframe.setLocationRelativeTo(this);
-			Settings.mainframe.setAlwaysOnTop(true);
-			Settings.mainframe.setAlwaysOnTop(false);
 			Settings.mainframe.setVisible(true);
-		
-			
-		
+			setEnabled(false);
+			b_settings.setEnabled(false);
 		});
 
 		// OpenFolder Button
 		this.add(b_openfolder);
 		b_openfolder.setBounds(332, 35, 30, 25);
-		b_openfolder.setToolTipText("Open current folder");
+		b_openfolder.setToolTipText(MainClass.lang.getLocale("openfolder::tooltip"));
 		b_openfolder.addActionListener(e -> {
 			if (Desktop.isDesktopSupported()) {
 				desktop = Desktop.getDesktop();
-
 				try {
-
 					// Windows
 					// Runtime.getRuntime().exec("explorer.exe /select," +
 					// Server.CurrentTrack.getAbsolutePath());
 					// Mac
 					// Runtime.getRuntime().exec("open -R filename" +
 					// Server.CurrentTrack.getAbsolutePath());
-
 					desktop.open(MainClass.lastpth);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -425,7 +406,6 @@ public class GUIServer extends JFrame {
 	public void showGUI() {
 		this.setVisible(true);
 		try {
-			// 4
 			this.createBufferStrategy(2);
 		} catch (Exception e) {
 			System.err.println("≈банные буферы");
@@ -438,20 +418,10 @@ public class GUIServer extends JFrame {
 		if (!list_music.isSelectionEmpty()) {
 			if (FileList.filelist.get(list_music.getSelectedValue()).file.getName()
 					.equals(Server.CurrentTrack.getName())) {
-
 				b_delete.setEnabled(false);
 			} else {
 				b_delete.setEnabled(true);
 			}
 		}
 	}
-
-//	public void ShakeOff() {
-//		if (!Server.isPaused && !Server.isSkip && Settings.isShaking) {
-//			Point last = this.getLocation();
-//			this.setLocation(last.x + Utils.getRandom(2), last.y + Utils.getRandom(2));
-//			Utils.sleep(20);
-//			this.setLocation(last);
-//		}
-//	}
 }
