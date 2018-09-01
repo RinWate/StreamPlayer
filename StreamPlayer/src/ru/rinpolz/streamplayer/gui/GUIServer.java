@@ -3,7 +3,6 @@ package ru.rinpolz.streamplayer.gui;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -88,7 +87,7 @@ public class GUIServer extends JFrame {
 		this.setIconImage(MainClass.rl.icon);
 		this.getContentPane().setBackground(Color.lightGray);
 		this.setTitle(name);
-		this.setSize(400, 305);
+		this.setSize(400, 306);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(null);
@@ -128,6 +127,7 @@ public class GUIServer extends JFrame {
 		list_music.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.add(sp_list);
 		sp_list.setBounds(2, 61, 286, 187);
+		
 		// >
 		list_music.addListSelectionListener(e -> {
 			updateDeleteButtonState();
@@ -175,6 +175,12 @@ public class GUIServer extends JFrame {
 		});
 		//// >
 		sl_currentSong.addMouseListener(new SMouseListener() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				sl_currentSong.reposPresset();
+			}
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.isShiftDown() && sl_currentSong.isEnabled()) {
@@ -220,9 +226,12 @@ public class GUIServer extends JFrame {
 
 		b_settings.addActionListener(e -> {
 			Settings.mainframe.setLocationRelativeTo(this);
+			Settings.mainframe.setAlwaysOnTop(true);
+			Settings.mainframe.setAlwaysOnTop(false);
 			Settings.mainframe.setVisible(true);
-			setEnabled(false);
-			b_settings.setEnabled(false);
+		
+			
+		
 		});
 
 		// OpenFolder Button
@@ -232,7 +241,16 @@ public class GUIServer extends JFrame {
 		b_openfolder.addActionListener(e -> {
 			if (Desktop.isDesktopSupported()) {
 				desktop = Desktop.getDesktop();
+
 				try {
+
+					// Windows
+					// Runtime.getRuntime().exec("explorer.exe /select," +
+					// Server.CurrentTrack.getAbsolutePath());
+					// Mac
+					// Runtime.getRuntime().exec("open -R filename" +
+					// Server.CurrentTrack.getAbsolutePath());
+
 					desktop.open(MainClass.lastpth);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -331,8 +349,7 @@ public class GUIServer extends JFrame {
 		this.add(b_replay);
 		b_replay.setIcon(MainClass.rl.getImage("replay"));
 		b_replay.setBounds(239, 35, 30, 25);
-		
-		
+
 		b_replay.addActionListener(e -> {
 			if (hasReplay) {
 				b_replay.setIcon(MainClass.rl.getImage("replay"));
@@ -429,12 +446,12 @@ public class GUIServer extends JFrame {
 		}
 	}
 
-	public void ShakeOff() {
-		if (!Server.isPaused && !Server.isSkip && Settings.isShaking) {
-			Point last = this.getLocation();
-			this.setLocation(last.x + Utils.getRandom(2), last.y + Utils.getRandom(2));
-			Utils.sleep(20);
-			this.setLocation(last);
-		}
-	}
+//	public void ShakeOff() {
+//		if (!Server.isPaused && !Server.isSkip && Settings.isShaking) {
+//			Point last = this.getLocation();
+//			this.setLocation(last.x + Utils.getRandom(2), last.y + Utils.getRandom(2));
+//			Utils.sleep(20);
+//			this.setLocation(last);
+//		}
+//	}
 }

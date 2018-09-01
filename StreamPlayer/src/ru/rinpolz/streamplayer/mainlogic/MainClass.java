@@ -9,13 +9,15 @@ import ru.rinpolz.streamplayer.settingsIO.FileLoader;
 import ru.rinpolz.streamplayer.utill.TrashGrabber;
 
 public class MainClass {
+	public static int[] tempHolder;
+	public static boolean[] tempBoolholder;
 	public static String ip = "";
 	public static int port = 0;
 	public static File lastpth;
-	public static boolean isRemote;
+	
+	public static boolean isServer;
 
 	public static ResourceLoader rl = new ResourceLoader();
-
 	static FileLoader loader = new FileLoader();
 	public static JKeyType keyListener = new JKeyType();
 	static Settings settings = new Settings();
@@ -34,5 +36,14 @@ public class MainClass {
 
 		Settings.setSettings();
 		keyListener.initKeys();
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				FileLoader.saveSettings();
+			}
+		});
+
 	}
+
 }

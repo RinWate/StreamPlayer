@@ -20,7 +20,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.swing.JOptionPane;
 
-import ru.rinpolz.streamplayer.gui.Debug;
 import ru.rinpolz.streamplayer.gui.GUIClient;
 import ru.rinpolz.streamplayer.network.ClientInputReader;
 import ru.rinpolz.streamplayer.network.NetCodes;
@@ -33,65 +32,62 @@ public class Client extends Thread {
 	VolumeController controll = new VolumeController(false);
 
 	// Максимальный размер пакета
-	public static int SIZE = 8192;
 
 	int nonReadebleCycles = 0;
-
 	int uiUpdate = 0;
-
 	byte retry = 0;
 
-	public static SourceDataLine clipSDL;
+	SourceDataLine clipSDL;
+	ClientInputReader input;
+	AudioFormat decodedFormat;
 
-	public static ClientInputReader input;
-
-	public static AudioFormat decodedFormat;
-
-	public static int last = 0;
-	public static boolean isMute = false;
+	static int last = 0;
+	static boolean isMute = false;
 
 	public static boolean isPaised = false;
 
-	static boolean statuschanged = false;
+	boolean statuschanged = false;
 
-	public static SocketChannel sc;
-	public static boolean isConnected = false;
-	public static boolean isError = false;
+	SocketChannel sc;
+	boolean isConnected = false;
+	boolean isError = false;
 
 	float samplerate = 0;
 
-	public static boolean hasLag = false;
-
 	public static GUIClient gui = new GUIClient("StreamPlayer Client");
-	public static FloatControl volume;
+	static FloatControl volume;
 
 	byte errorid = 0;
 
 	// DBG
-	public static long readed = 0;
-	public static long acceped = 0;
-	public static long resets = 0;
-	public static long skipped = 0;
+	long readed = 0;
+	long acceped = 0;
+	long resets = 0;
+	long skipped = 0;
 
 	Thread lineupdater = new Thread(gui.sl_currentSong);
 	StatUsParser parser = new StatUsParser();
 
 	@Override
 	public void run() {
-
+		lineupdater.setPriority(NORM_PRIORITY);
 		this.setPriority(MAX_PRIORITY);
-		MainClass.isRemote = false;
-		MainClass.login.setButtonStatus(false);
+		this.setName("Client player");
 
-		gui.sl_currentSong.isRunning = true;
+		MainClass.isServer = false;
+		MainClass.login.setButtonStatus(false);
+		gui.sl_currentSong.setRunning(true);
+
 		lineupdater.start();
 		retry = 3;
 		while (retry <= 3) {
 			try {
-				System.out.println("Реккрнет");
+				System.out.println("Recconected");
+				gui.sl_currentSong.clearString();
+				
 				isConnected = false;
 				sc = SocketChannel.open();
-				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 3000);
+				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 1000);
 
 				isConnected = true;
 
@@ -100,7 +96,7 @@ public class Client extends Thread {
 					isError = false;
 					MainClass.login.setVisible(false);
 					gui.showGUI();
-					if (!gui.sl_currentSong.init) {
+					if (!gui.sl_currentSong.isInit()) {
 						gui.sl_currentSong.init();
 
 					}
@@ -113,13 +109,10 @@ public class Client extends Thread {
 				input = new ClientInputReader(sc);
 
 				while (!isError) {
-
-					/////// Первый покет
-
 					PacketTrack startPack = null;
 					gui.l_status.setText("Status: Synchronization");
 
-					// TODO loop
+					// TODO loop !infinity! may lagged
 					while (startPack == null) {
 						startPack = input.getData();
 						Utils.sleep(17);
@@ -128,7 +121,7 @@ public class Client extends Thread {
 					parser.Parse(startPack.stringData);
 					samplerate = startPack.samplerate;
 					gui.sl_currentSong.resetAll(true);
-					gui.sl_currentSong.setName(parser.getTite());
+					gui.sl_currentSong.setString(parser.getTite());
 					matchVersion(parser.getVersion());
 					retry = 0;
 
@@ -148,10 +141,6 @@ public class Client extends Thread {
 					while (!isError) {
 						try {
 
-							Debug.l_debug.setText("<html> IP/Port: " + MainClass.ip + ":" + MainClass.port + " Readed: "
-									+ Client.readed + " Accepted: " + Client.acceped + " Resets: " + Client.resets
-									+ " Skipped: " + Client.skipped + "</html>");
-
 							skipped = acceped - readed;
 
 							PacketTrack i = input.getData();
@@ -160,16 +149,15 @@ public class Client extends Thread {
 
 								parser.Parse(i.stringData);
 
+								System.out.println("ЭТОГО БЫТЬ НЕДОЛЖНО");
+
 								nonReadebleCycles = 0;
 								isPaised = i.netCode == NetCodes.PAUSED;
 								gui.l_timer.setText(parser.getTimeline());
 								gui.l_status.setText(parser.getStatus());
-
 								gui.sl_currentSong.setValue(i.progress);
 
 								uiUpdate++;
-
-								// КонецТрека
 
 								/// ТУТ КЭКК
 								if (i.netCode == NetCodes.ENDED) {
@@ -181,7 +169,6 @@ public class Client extends Thread {
 
 								// TODO ТУТ
 								if (i.netCode != NetCodes.PAUSED && i.leg != -1) {
-
 									clipSDL.start();
 									clipSDL.write(i.data, 0, i.leg);
 									gui.sl_currentSong.UpdateSpec(i.data);
@@ -196,13 +183,7 @@ public class Client extends Thread {
 
 								if (uiUpdate >= 25) {
 									gui.l_online.setText("Online: " + i.num_of_clients + getWord(i.num_of_clients));
-									gui.sl_currentSong.setName(parser.getTite());
-
-									// gui.pr_bar.setToolTipText(i.filename);
-									// if (gui.pr_bar.isIndeterminate()) {
-									// gui.pr_bar.setIndeterminate(false);
-									// }
-
+									gui.sl_currentSong.setString(parser.getTite());
 									uiUpdate = 0;
 
 								}
@@ -211,17 +192,18 @@ public class Client extends Thread {
 								nonReadebleCycles++;
 
 								Utils.sleep(20);
-								if (nonReadebleCycles > 5) {
+								if (nonReadebleCycles > 10) {
 									gui.sl_currentSong.resetAll(false);
 								}
 
 								if (nonReadebleCycles > 100) {
+
+									gui.sl_currentSong.clearString();
 									gui.l_status.setText("No data available...");
-									// gui.pr_bar.setIndeterminate(true);
 
 								}
 								if (nonReadebleCycles > 400) {
-									gui.sl_currentSong.line = "";
+
 									throw new TimeoutException();
 								}
 
@@ -275,7 +257,7 @@ public class Client extends Thread {
 
 		isError = true;
 		gui.l_status.setText("Status: error...");
-		gui.sl_currentSong.isRunning = false;
+		gui.sl_currentSong.setRunning(false);
 		gui.dispose();
 		MainClass.login.setVisible(true);
 		MainClass.login.setButtonStatus(true);

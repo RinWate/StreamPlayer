@@ -26,7 +26,7 @@ import ru.rinpolz.streamplayer.trackControll.Track;
 import ru.rinpolz.streamplayer.utill.Utils;
 
 public class Server extends Thread {
-
+	public static int SIZE = 8192;
 	StringBuffer strigBuffer = new StringBuffer();
 
 	public static volatile float[] equalizer = new float[32];
@@ -34,15 +34,14 @@ public class Server extends Thread {
 	String duration = "";
 	VolumeController controll = new VolumeController(true);
 
-	public static int SIZE = 8192;
-	static ByteBuffer sendbuffer = ByteBuffer.allocate(SIZE);
-	ByteBuffer someshut = ByteBuffer.allocate(1024);
+	ByteBuffer sendbuffer = ByteBuffer.allocate(SIZE);
+
+	ByteBuffer inputCommandBuffer = ByteBuffer.allocate(1);
 
 	public static int lastvolume = 0;
 
 	static boolean isMute = false;
 	public static boolean isReplaed = false;
-
 	public static boolean isSet = false;
 
 	public static boolean isEnded = false;
@@ -66,31 +65,32 @@ public class Server extends Thread {
 	static String timeline = "";
 
 	public static File CurrentTrack;
-
 	public static FileList playlist;
 
 	/////// I|O
 	public static AudioInputStream in;
 	public static SourceDataLine Output;
 	AudioFormat decodedFormat;
-	static byte[] data;
-	static int num;
-	static float sampler;
+	byte[] data;
+	int num;
+	float sampler;
 	public static GUIServer gui = new GUIServer("StreamPlayer Server on: " + MainClass.port);
 	public static boolean isOpen;
 	Thread lineupdater = new Thread(gui.sl_currentSong);
+
 	public static FloatControl volume;
 	static int noskipcycles = 0;
 
 	public void run() {
 
+		lineupdater.setPriority(NORM_PRIORITY);
 		this.setPriority(MAX_PRIORITY);
 		this.setName("Server-Main");
 
-		MainClass.isRemote = true;
+		MainClass.isServer = true;
 		MainClass.login.setVisible(false);
 		playlist = new FileList();
-		gui.sl_currentSong.isRunning = true;
+		gui.sl_currentSong.setRunning(true);
 		lineupdater.start();
 
 		while (playlist.fr.isVisible()) {
@@ -149,7 +149,7 @@ public class Server extends Thread {
 
 		title = f.getName();
 		gui.l_status.setText(status);
-		gui.sl_currentSong.setName(f.getName());
+		gui.sl_currentSong.setString(f.getName());
 		gui.sl_currentSong.resetAll(true);
 
 		try {
@@ -168,7 +168,8 @@ public class Server extends Thread {
 			DecodedMpegAudioInputStream din = new DecodedMpegAudioInputStream(decodedFormat, in);
 
 			equalizer = (float[]) (din.properties().get("mp3.equalizer"));
-			Equalizer.RefreshEqualizer();
+
+			// Equalizer.RefreshEqualizer();
 
 			duration = Utils.getDuration(f);
 			trackSizeInmicros = Utils.getMs(f);
@@ -249,7 +250,9 @@ public class Server extends Thread {
 
 					gui.sl_currentSong.UpdateSpec(data);
 					Output.write(data, 0, num);
+
 					num = din.read(data);
+
 					forAllClients(createPack());
 					isPosCha = false;
 
@@ -368,7 +371,7 @@ public class Server extends Thread {
 				gui.sl_currentSong.getValue(), buildString());
 	}
 
-	public static ByteBuffer createDataPack(PacketTrack obj) throws IOException {
+	public ByteBuffer createDataPack(PacketTrack obj) throws IOException {
 		sendbuffer.rewind();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream ois = new ObjectOutputStream(bos);
@@ -408,14 +411,33 @@ public class Server extends Thread {
 
 	}
 
+	public void proccesCommand(byte com) {
+		switch (com) {
+		case NetCodes.TS_SKIP:
+			isSkip = true;
+			break;
+		case NetCodes.TS_REPLAY:
+			isReplaed = true;
+			isSkip = true;
+			break;
+
+		default:
+			break;
+		}
+
+	}
+
 	public void forAllClients(PacketTrack pac) {
 		for (ClientConnection k : ClientListener.ÑlientsConnections) {
 			try {
 				k.connection.write(createDataPack(createPack()));
 
-				if (k.connection.isConnected() && k.connection.read(someshut) > 0) {
-					someshut.rewind();
-					isSkip = true;
+				if (!inputCommandBuffer.hasRemaining()) {
+					inputCommandBuffer.flip();
+					proccesCommand(inputCommandBuffer.get());
+					inputCommandBuffer.rewind();
+				} else {
+					k.connection.read(inputCommandBuffer);
 				}
 
 				k.connection.socket().getOutputStream().flush();

@@ -7,12 +7,12 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import ru.rinpolz.streamplayer.gui.Debug;
-import ru.rinpolz.streamplayer.hotkeys.HotKey;
+import ru.rinpolz.streamplayer.hotkeys.STHotKey;
 import ru.rinpolz.streamplayer.hotkeys.KeyChooser;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
 import ru.rinpolz.streamplayer.utill.Utils;
@@ -20,8 +20,7 @@ import ru.rinpolz.streamplayer.utill.Utils;
 public class Settings {
 	public static boolean isOpened;
 
-	public static int[] keys = {
-			1, 39 // Skip 0
+	public static int[] keys = { 1, 39 // Skip 0
 
 			, 1, 37 // Pause 2
 			, 1, 38 // Volume-Down 4
@@ -29,31 +28,30 @@ public class Settings {
 			, 1, 40 // Volume-Up 8
 			, 1, 34 };
 
-	public static boolean isShaking = false;
+	// public static boolean isShaking = false;
+
 	public static boolean isRamdOld = false;
 	public static boolean isDebug = false;
 	public static boolean isShowFormat = false;
 	public static boolean isAllowClientSkip = false;
 
-	public static JFrame mainframe = new JFrame();
+	public static JDialog mainframe = new JDialog();
 	public static JButton set_skip = new JButton("Set");
 	public static JButton set_pause = new JButton("Set");
 	public static JButton set_mute = new JButton("Set");
 	public static JButton set_volume_up = new JButton("Set");
 	public static JButton set_volume_down = new JButton("Set");
 
-	HotKey[] hotkeys = { new HotKey(1), new HotKey(2), new HotKey(4), new HotKey(8) };
-	
-	public static Debug debug = new Debug();
+	STHotKey[] hotkeys = { new STHotKey(1), new STHotKey(2), new STHotKey(4) };
 
-	public static JComboBox<HotKey> box_skip = new JComboBox<>();
-	public static JComboBox<HotKey> box_pause = new JComboBox<>();
-	public static JComboBox<HotKey> box_mute = new JComboBox<>();
-	public static JComboBox<HotKey> box_volume_up = new JComboBox<>();
-	public static JComboBox<HotKey> box_volume_down = new JComboBox<>();
+	public static JComboBox<STHotKey> box_skip = new JComboBox<>();
+	public static JComboBox<STHotKey> box_pause = new JComboBox<>();
+	public static JComboBox<STHotKey> box_mute = new JComboBox<>();
+	public static JComboBox<STHotKey> box_volume_up = new JComboBox<>();
+	public static JComboBox<STHotKey> box_volume_down = new JComboBox<>();
 
 	public static JButton set_replay = new JButton("Set");
-	public static JComboBox<HotKey> box_replay = new JComboBox<>();
+	public static JComboBox<STHotKey> box_replay = new JComboBox<>();
 
 	private JButton save = new JButton("Save");
 	private JButton set_default = new JButton("Default");
@@ -67,15 +65,14 @@ public class Settings {
 
 	private JLabel l_replay = new JLabel("Replay Key:");
 
-	public static JCheckBox cb_shaking = new JCheckBox("Shaking");
+	// public static JCheckBox cb_shaking = new JCheckBox("Shaking");
 	public static JCheckBox cb_oldRamdom = new JCheckBox("OldRmd");
-	public static JCheckBox cb_debug = new JCheckBox("Debug");
 	public static JCheckBox cb_fileformat = new JCheckBox("File Formats");
 	public static JCheckBox cb_allowskip = new JCheckBox("Radio Mod");
 
 	public Settings() {
 
-		for (HotKey hotKey : hotkeys) {
+		for (STHotKey hotKey : hotkeys) {
 			box_skip.addItem(hotKey);
 			box_mute.addItem(hotKey);
 			box_pause.addItem(hotKey);
@@ -117,12 +114,12 @@ public class Settings {
 		mainframe.add(box_replay);
 		mainframe.add(set_replay);
 
-		mainframe.add(cb_shaking);
+		// mainframe.add(cb_shaking);
 		mainframe.add(cb_oldRamdom);
-		mainframe.add(cb_debug);
+
 		mainframe.add(cb_fileformat);
 		mainframe.add(cb_allowskip);
-		
+
 		l_version.setBounds(133, -3, 50, 20);
 		l_version.setHorizontalAlignment(JLabel.RIGHT);
 
@@ -153,18 +150,17 @@ public class Settings {
 		box_replay.setBounds(10, 250, 75, 20);
 		set_replay.setBounds(100, 250, 75, 20);
 
-		cb_shaking.setBounds(10, 275, 100, 20);
+		// cb_shaking.setBounds(10, 275, 100, 20);
 		cb_oldRamdom.setBounds(110, 275, 100, 20);
-		cb_debug.setBounds(110, 295, 100, 20);
+
 		cb_fileformat.setBounds(10, 295, 125, 20);
 		cb_allowskip.setBounds(10, 315, 125, 20);
-		
-		cb_debug.setToolTipText("Client-Use Only");
+
 		cb_fileformat.setToolTipText("Not working");
 		cb_allowskip.setToolTipText("Allows clients to skip current track");
-		
+
 		cb_allowskip.setEnabled(false);
-		cb_debug.setEnabled(false);
+
 		cb_fileformat.setEnabled(false);
 
 		save.setBounds(10, 335, 75, 20);
@@ -180,33 +176,33 @@ public class Settings {
 		});
 
 		box_skip.addActionListener(e -> {
-			HotKey g = (HotKey) box_skip.getSelectedItem();
+			STHotKey g = (STHotKey) box_skip.getSelectedItem();
 			keys[0] = g.getID();
 		});
 
 		box_pause.addActionListener(e -> {
-			HotKey g = (HotKey) box_pause.getSelectedItem();
+			STHotKey g = (STHotKey) box_pause.getSelectedItem();
 			keys[2] = g.getID();
 		});
 
 		box_volume_up.addActionListener(e -> {
-			HotKey g = (HotKey) box_volume_up.getSelectedItem();
+			STHotKey g = (STHotKey) box_volume_up.getSelectedItem();
 			keys[4] = g.getID();
 		});
 
 		box_mute.addActionListener(e -> {
-			HotKey g = (HotKey) box_mute.getSelectedItem();
+			STHotKey g = (STHotKey) box_mute.getSelectedItem();
 			keys[6] = g.getID();
 		});
 
 		box_volume_down.addActionListener(e -> {
 
-			HotKey g = (HotKey) box_volume_down.getSelectedItem();
+			STHotKey g = (STHotKey) box_volume_down.getSelectedItem();
 			keys[8] = g.getID();
 		});
 
 		box_replay.addActionListener(e -> {
-			HotKey g = (HotKey) box_replay.getSelectedItem();
+			STHotKey g = (STHotKey) box_replay.getSelectedItem();
 			keys[10] = g.getID();
 
 		});
@@ -241,25 +237,20 @@ public class Settings {
 			mainframe.setEnabled(false);
 		});
 
-		cb_shaking.addActionListener(e -> {
-			isShaking = cb_shaking.isSelected();
-		});
+		// cb_shaking.addActionListener(e -> {
+		// isShaking = cb_shaking.isSelected();
+		// });
 
 		cb_oldRamdom.addActionListener(e -> {
 			isRamdOld = cb_oldRamdom.isSelected();
 		});
-		
-		cb_debug.addActionListener(e -> {
-			isDebug = cb_debug.isSelected();
-			debug.startDebug(isDebug);
-		});
-		
+
 		cb_fileformat.addActionListener(e -> {
 			isShowFormat = cb_fileformat.isSelected();
 		});
-		
+
 		cb_allowskip.addActionListener(e -> {
-			
+
 		});
 
 		set_default.addActionListener(e -> {
@@ -267,7 +258,7 @@ public class Settings {
 			FileLoader.saveDefault();
 			JOptionPane.showMessageDialog(mainframe, "Reset to Default!", "Default", JOptionPane.INFORMATION_MESSAGE);
 			mainframe.dispose();
-			setFocus(true);
+
 		});
 
 		save.addActionListener(e -> {
@@ -289,7 +280,7 @@ public class Settings {
 				, 1, 34 };
 
 		isRamdOld = false;
-		isShaking = false;
+		// isShaking = false;
 		isAllowClientSkip = true;
 		isDebug = false;
 		isShowFormat = false;
@@ -298,15 +289,9 @@ public class Settings {
 		MainClass.keyListener.initKeys();
 		setSettings();
 	}
+
 	
-	public static void setFocus(boolean state) {
-		Server.gui.setEnabled(state);
-		Server.gui.b_settings.setEnabled(true);
-		if (state) {
-			Server.gui.setAlwaysOnTop(true);
-			Server.gui.setAlwaysOnTop(false);
-		}
-	}
+	
 
 	public static void setSettings() {
 
@@ -328,7 +313,7 @@ public class Settings {
 		box_replay.setSelectedIndex(cheks(keys[10]));
 		SetButtonName(set_replay, KeyEvent.getKeyText(keys[11]));
 
-		cb_shaking.setSelected(isShaking);
+		// cb_shaking.setSelected(isShaking);
 		cb_oldRamdom.setSelected(isRamdOld);
 
 	}
