@@ -38,6 +38,9 @@ public class SlideLinePanel extends Canvas implements Runnable {
 	private int stringWidth = 0;
 	private boolean updateStingSize = true;
 
+	
+	
+	
 	public SlideLinePanel() {
 		this.setBackground(Color.DARK_GRAY);
 		this.setIgnoreRepaint(true);
@@ -110,16 +113,6 @@ public class SlideLinePanel extends Canvas implements Runnable {
 				g.fillRect((int) (cprogress - 3), 1, 5, 18);
 			}
 
-			///////
-
-			// if (summ > 600) {
-			// if (!MainClass.isRemote) {
-			// Client.gui.ShakeOff();
-			// } else {
-			// Server.gui.ShakeOff();
-			// }
-			// }
-
 			g.setColor(Color.white);
 			g.drawString(line, x, (int) curTextY);
 
@@ -161,7 +154,7 @@ public class SlideLinePanel extends Canvas implements Runnable {
 			}
 
 			cprogress = Utils.lerp(cprogress, Destprogress, 0.05);
-			curTextY = Math.abs(destTextY - curTextY) < 0.5 ?  destTextY : Utils.lerp(curTextY, destTextY, 0.2);
+			curTextY = Math.abs(destTextY - curTextY) < 0.5 ? destTextY : Utils.lerp(curTextY, destTextY, 0.2);
 			curPresset = Utils.lerp(curPresset, presset, 0.4);
 
 			bfs.show();
@@ -204,10 +197,14 @@ public class SlideLinePanel extends Canvas implements Runnable {
 		isRunning = b;
 	}
 
-	public void setName(String s) {
+	public void clearString() {
+		line = "";
+
+	}
+
+	public void setString(String s) {
 		line = s.substring(0, s.lastIndexOf("."));
 		updateStingSize = true;
-
 	}
 
 	// Getters

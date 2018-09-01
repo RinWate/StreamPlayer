@@ -32,7 +32,6 @@ public class Client extends Thread {
 	VolumeController controll = new VolumeController(false);
 
 	// Максимальный размер пакета
-	
 
 	int nonReadebleCycles = 0;
 	int uiUpdate = 0;
@@ -75,7 +74,7 @@ public class Client extends Thread {
 		this.setPriority(MAX_PRIORITY);
 		this.setName("Client player");
 
-		MainClass.isRemote = false;
+		MainClass.isServer = false;
 		MainClass.login.setButtonStatus(false);
 		gui.sl_currentSong.setRunning(true);
 
@@ -84,9 +83,11 @@ public class Client extends Thread {
 		while (retry <= 3) {
 			try {
 				System.out.println("Recconected");
+				gui.sl_currentSong.clearString();
+				
 				isConnected = false;
 				sc = SocketChannel.open();
-				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 3000);
+				sc.socket().connect(new InetSocketAddress(MainClass.ip, MainClass.port), 1000);
 
 				isConnected = true;
 
@@ -120,7 +121,7 @@ public class Client extends Thread {
 					parser.Parse(startPack.stringData);
 					samplerate = startPack.samplerate;
 					gui.sl_currentSong.resetAll(true);
-					gui.sl_currentSong.setName(parser.getTite());
+					gui.sl_currentSong.setString(parser.getTite());
 					matchVersion(parser.getVersion());
 					retry = 0;
 
@@ -140,7 +141,6 @@ public class Client extends Thread {
 					while (!isError) {
 						try {
 
-						
 							skipped = acceped - readed;
 
 							PacketTrack i = input.getData();
@@ -149,11 +149,12 @@ public class Client extends Thread {
 
 								parser.Parse(i.stringData);
 
+								System.out.println("ЭТОГО БЫТЬ НЕДОЛЖНО");
+
 								nonReadebleCycles = 0;
 								isPaised = i.netCode == NetCodes.PAUSED;
 								gui.l_timer.setText(parser.getTimeline());
 								gui.l_status.setText(parser.getStatus());
-
 								gui.sl_currentSong.setValue(i.progress);
 
 								uiUpdate++;
@@ -182,13 +183,7 @@ public class Client extends Thread {
 
 								if (uiUpdate >= 25) {
 									gui.l_online.setText("Online: " + i.num_of_clients + getWord(i.num_of_clients));
-									gui.sl_currentSong.setName(parser.getTite());
-
-									// gui.pr_bar.setToolTipText(i.filename);
-									// if (gui.pr_bar.isIndeterminate()) {
-									// gui.pr_bar.setIndeterminate(false);
-									// }
-
+									gui.sl_currentSong.setString(parser.getTite());
 									uiUpdate = 0;
 
 								}
@@ -197,17 +192,18 @@ public class Client extends Thread {
 								nonReadebleCycles++;
 
 								Utils.sleep(20);
-								if (nonReadebleCycles > 5) {
+								if (nonReadebleCycles > 10) {
 									gui.sl_currentSong.resetAll(false);
 								}
 
 								if (nonReadebleCycles > 100) {
+
+									gui.sl_currentSong.clearString();
 									gui.l_status.setText("No data available...");
-									// gui.pr_bar.setIndeterminate(true);
 
 								}
 								if (nonReadebleCycles > 400) {
-									gui.sl_currentSong.resetAll(true);
+
 									throw new TimeoutException();
 								}
 

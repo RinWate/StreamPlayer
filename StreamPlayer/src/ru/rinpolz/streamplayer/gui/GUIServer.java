@@ -226,9 +226,12 @@ public class GUIServer extends JFrame {
 
 		b_settings.addActionListener(e -> {
 			Settings.mainframe.setLocationRelativeTo(this);
+			Settings.mainframe.setAlwaysOnTop(true);
+			Settings.mainframe.setAlwaysOnTop(false);
 			Settings.mainframe.setVisible(true);
-			setEnabled(false);
-			b_settings.setEnabled(false);
+		
+			
+		
 		});
 
 		// OpenFolder Button

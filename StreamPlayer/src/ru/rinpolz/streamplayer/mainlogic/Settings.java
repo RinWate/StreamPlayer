@@ -7,11 +7,12 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import ru.rinpolz.streamplayer.hotkeys.HotKey;
+import ru.rinpolz.streamplayer.hotkeys.STHotKey;
 import ru.rinpolz.streamplayer.hotkeys.KeyChooser;
 import ru.rinpolz.streamplayer.settingsIO.FileLoader;
 import ru.rinpolz.streamplayer.utill.Utils;
@@ -34,23 +35,23 @@ public class Settings {
 	public static boolean isShowFormat = false;
 	public static boolean isAllowClientSkip = false;
 
-	public static JFrame mainframe = new JFrame();
+	public static JDialog mainframe = new JDialog();
 	public static JButton set_skip = new JButton("Set");
 	public static JButton set_pause = new JButton("Set");
 	public static JButton set_mute = new JButton("Set");
 	public static JButton set_volume_up = new JButton("Set");
 	public static JButton set_volume_down = new JButton("Set");
 
-	HotKey[] hotkeys = { new HotKey(1), new HotKey(2), new HotKey(4), new HotKey(8) };
+	STHotKey[] hotkeys = { new STHotKey(1), new STHotKey(2), new STHotKey(4) };
 
-	public static JComboBox<HotKey> box_skip = new JComboBox<>();
-	public static JComboBox<HotKey> box_pause = new JComboBox<>();
-	public static JComboBox<HotKey> box_mute = new JComboBox<>();
-	public static JComboBox<HotKey> box_volume_up = new JComboBox<>();
-	public static JComboBox<HotKey> box_volume_down = new JComboBox<>();
+	public static JComboBox<STHotKey> box_skip = new JComboBox<>();
+	public static JComboBox<STHotKey> box_pause = new JComboBox<>();
+	public static JComboBox<STHotKey> box_mute = new JComboBox<>();
+	public static JComboBox<STHotKey> box_volume_up = new JComboBox<>();
+	public static JComboBox<STHotKey> box_volume_down = new JComboBox<>();
 
 	public static JButton set_replay = new JButton("Set");
-	public static JComboBox<HotKey> box_replay = new JComboBox<>();
+	public static JComboBox<STHotKey> box_replay = new JComboBox<>();
 
 	private JButton save = new JButton("Save");
 	private JButton set_default = new JButton("Default");
@@ -71,7 +72,7 @@ public class Settings {
 
 	public Settings() {
 
-		for (HotKey hotKey : hotkeys) {
+		for (STHotKey hotKey : hotkeys) {
 			box_skip.addItem(hotKey);
 			box_mute.addItem(hotKey);
 			box_pause.addItem(hotKey);
@@ -175,33 +176,33 @@ public class Settings {
 		});
 
 		box_skip.addActionListener(e -> {
-			HotKey g = (HotKey) box_skip.getSelectedItem();
+			STHotKey g = (STHotKey) box_skip.getSelectedItem();
 			keys[0] = g.getID();
 		});
 
 		box_pause.addActionListener(e -> {
-			HotKey g = (HotKey) box_pause.getSelectedItem();
+			STHotKey g = (STHotKey) box_pause.getSelectedItem();
 			keys[2] = g.getID();
 		});
 
 		box_volume_up.addActionListener(e -> {
-			HotKey g = (HotKey) box_volume_up.getSelectedItem();
+			STHotKey g = (STHotKey) box_volume_up.getSelectedItem();
 			keys[4] = g.getID();
 		});
 
 		box_mute.addActionListener(e -> {
-			HotKey g = (HotKey) box_mute.getSelectedItem();
+			STHotKey g = (STHotKey) box_mute.getSelectedItem();
 			keys[6] = g.getID();
 		});
 
 		box_volume_down.addActionListener(e -> {
 
-			HotKey g = (HotKey) box_volume_down.getSelectedItem();
+			STHotKey g = (STHotKey) box_volume_down.getSelectedItem();
 			keys[8] = g.getID();
 		});
 
 		box_replay.addActionListener(e -> {
-			HotKey g = (HotKey) box_replay.getSelectedItem();
+			STHotKey g = (STHotKey) box_replay.getSelectedItem();
 			keys[10] = g.getID();
 
 		});
@@ -257,7 +258,7 @@ public class Settings {
 			FileLoader.saveDefault();
 			JOptionPane.showMessageDialog(mainframe, "Reset to Default!", "Default", JOptionPane.INFORMATION_MESSAGE);
 			mainframe.dispose();
-			setFocus(true);
+
 		});
 
 		save.addActionListener(e -> {
@@ -289,14 +290,8 @@ public class Settings {
 		setSettings();
 	}
 
-	public static void setFocus(boolean state) {
-		Server.gui.setEnabled(state);
-		Server.gui.b_settings.setEnabled(true);
-		if (state) {
-			Server.gui.setAlwaysOnTop(true);
-			Server.gui.setAlwaysOnTop(false);
-		}
-	}
+	
+	
 
 	public static void setSettings() {
 

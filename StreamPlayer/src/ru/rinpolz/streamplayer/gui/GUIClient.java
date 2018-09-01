@@ -32,6 +32,7 @@ public class GUIClient extends JFrame {
 	public JLabel l_status = new JLabel("Status: ");
 	public JLabel l_timer = new JLabel("00:00|00:00", SwingConstants.CENTER);
 	public JSlider s_volume = new JSlider();
+	
 	public SlideLinePanel sl_currentSong = new SlideLinePanel();
 
 	public GUIClient(String name) {
